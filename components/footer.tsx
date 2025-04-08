@@ -12,7 +12,7 @@ export default function Footer() {
             <p className="text-gray-300 text-sm mb-1">경기도 이천시 신둔면원적로 512번길 202</p>
             <p className="text-gray-300 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip.17300</p>
           </div>
-
+ 
           {/* Contact */}
           <div>
             <h3 className="text-lg font-semibold mb-4">문의처</h3>
