@@ -8,16 +8,18 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <h3 className="text-lg font-semibold mb-4">회사 정보</h3>
-            <p className="text-gray-300 text-sm mb-1">(주)소미호 / 대표: 권기호</p>
-            <p className="text-gray-300 text-sm mb-1">주소: 경기도 이천시 신둔면 원적로 512번길 202</p>
-            <p className="text-gray-300 text-sm">사업자등록번호: 502-35-64031</p>
+            <p className="text-gray-300 text-sm mb-1">소미호</p>
+            <p className="text-gray-300 text-sm mb-1">경기도 이천시 신둔면원적로 512번길 202</p>
+            <p className="text-gray-300 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip.17300</p>
           </div>
 
           {/* Contact */}
           <div>
             <h3 className="text-lg font-semibold mb-4">문의처</h3>
-            <p className="text-gray-300 text-sm mb-1">이메일: contact@somio.com</p>
-            <p className="text-gray-300 text-sm">전화번호: +82-10-1234-5678</p>
+            <p className="text-gray-300 text-sm mb-1">Tel: 070-4833-7310</p>
+            <p className="text-gray-300 text-sm mb-1">Mobile: 010-7330-7314</p>
+            <p className="text-gray-300 text-sm mb-1">Fax: 0504-265-7314</p>
+            <p className="text-gray-300 text-sm">E mail: kwon@somiho.kr</p>
           </div>
 
           {/* Links */}
