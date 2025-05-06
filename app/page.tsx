@@ -13,7 +13,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 export default function HomePage() {
   // 배너 슬라이드 상태 관리
   const [currentSlide, setCurrentSlide] = useState(0)
-  const bannerImages = ["/images/banner-kafb2b.jpg", "/placeholder.svg?key=4fdpq", "/placeholder.svg?key=nk607"]
+  const bannerImages = ["https://kafb2b.or.kr/data/atchFile/2025/03/07/bc9ce29ecec8b321999b4436bac6fd14.jpg", "https://kafb2b.or.kr/data/atchFile/2025/03/24/f75d649400a1373fed29286d0ec5fac3.jpg", "https://kafb2b.or.kr/data/atchFile/2025/03/17/f9400d5cd795b4846dec707782ac9fe0.jpg"]
 
   // 자동 슬라이드 기능
   useEffect(() => {
