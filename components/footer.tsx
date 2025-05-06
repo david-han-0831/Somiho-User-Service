@@ -3,42 +3,48 @@ import Link from "next/link"
 export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white">
-      <div className="container-custom py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Company Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">회사 정보</h3>
-            <p className="text-gray-300 text-sm mb-1">소미호</p>
-            <p className="text-gray-300 text-sm mb-1">경기도 이천시 신둔면원적로 512번길 202</p>
-            <p className="text-gray-300 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip.17300</p>
+            <h3 className="text-lg font-semibold mb-4">국제거래소 B2B</h3>
+            <p className="text-gray-300 text-sm">비즈니스부터 유통까지, 해산물 거래의 새로운 기준을 제시합니다.</p>
           </div>
- 
-          {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">문의처</h3>
-            <p className="text-gray-300 text-sm mb-1">Tel: 070-4833-7310</p>
-            <p className="text-gray-300 text-sm mb-1">Mobile: 010-7330-7314</p>
-            <p className="text-gray-300 text-sm mb-1">Fax: 0504-265-7314</p>
-            <p className="text-gray-300 text-sm">E mail: kwon@somiho.kr</p>
+            <h3 className="text-lg font-semibold mb-4">빠른 링크</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/products" className="text-gray-300 hover:text-white">
+                  상품
+                </Link>
+              </li>
+              <li>
+                <Link href="/market-price" className="text-gray-300 hover:text-white">
+                  시세정보
+                </Link>
+              </li>
+              <li>
+                <Link href="/notice" className="text-gray-300 hover:text-white">
+                  공지사항
+                </Link>
+              </li>
+              <li>
+                <Link href="/my/reservations" className="text-gray-300 hover:text-white">
+                  예약내역
+                </Link>
+              </li>
+            </ul>
           </div>
-
-          {/* Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">링크</h3>
-            <div className="space-y-2">
-              <Link href="/privacy" className="text-gray-300 text-sm hover:text-primary block">
-                개인정보처리방침
-              </Link>
-              <Link href="/terms" className="text-gray-300 text-sm hover:text-primary block">
-                이용약관
-              </Link>
-            </div>
+            <h3 className="text-lg font-semibold mb-4">연락처</h3>
+            <address className="text-sm text-gray-300 not-italic">
+              <p>서울특별시 강남구 테헤란로 123</p>
+              <p>전화: 02-123-4567</p>
+              <p>이메일: info@koreaseafood-b2b.com</p>
+            </address>
           </div>
         </div>
-
-        {/* Copyright */}
-        <div className="border-t border-gray-700 mt-8 pt-6 text-center">
-          <p className="text-gray-400 text-sm">ⓒ 2025 SOMIHO. All rights reserved.</p>
+        <div className="border-t border-gray-700 mt-8 pt-4 text-sm text-gray-400 text-center">
+          &copy; 2025 국제거래소 B2B. All rights reserved.
         </div>
       </div>
     </footer>

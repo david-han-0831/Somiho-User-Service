@@ -1,28 +1,30 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Buenard as Pretendard } from "next/font/google"
 import "./globals.css"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import { Toaster } from "@/components/ui/toaster"
 
-const inter = Inter({ subsets: ["latin"] })
+const pretendard = Pretendard({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-pretendard",
+})
 
 export const metadata: Metadata = {
-  title: "김 국제거래소 B2B",
-  description: "국내외 바이어들이 한국 김 시세 및 품질 정보를 확인하고 주문할 수 있는 B2B 플랫폼",
+  title: "국제거래소 B2B 관리자",
+  description: "국제거래소 B2B 웹사이트 관리자 대시보드",
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="ko">
-      <body className={inter.className}>
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+      <body className={`${pretendard.variable} font-sans`}>
+        {children}
+        <Toaster />
       </body>
     </html>
   )

@@ -1,561 +1,753 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
-import { Star, Search } from "lucide-react"
-
-// Updated sample product data with more detailed information
-const products = [
-  {
-    id: "20250323-001",
-    name: "완도 특상품 김",
-    type: "마른김",
-    origin: "완도",
-    specification: "100매(220g)",
-    productionDate: "2025-01-15",
-    year: 2025,
-    grade: "A+",
-    price: 15000,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-  {
-    id: "20250323-002",
-    name: "고흥 일반 김",
-    type: "조미김",
-    origin: "고흥",
-    specification: "80매(200g)",
-    productionDate: "2025-01-20",
-    year: 2025,
-    grade: "A",
-    price: 12000,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-  {
-    id: "20250323-003",
-    name: "서천 특상품 김",
-    type: "마른김",
-    origin: "서천",
-    specification: "100매(220g)",
-    productionDate: "2025-01-10",
-    year: 2025,
-    grade: "A+",
-    price: 14500,
-    image: "/placeholder.svg?height=300&width=400",
-    available: false,
-  },
-  {
-    id: "20250323-004",
-    name: "부산 일반 김",
-    type: "조미김",
-    origin: "부산",
-    specification: "50매(120g)",
-    productionDate: "2025-02-05",
-    year: 2025,
-    grade: "B+",
-    price: 10000,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-  {
-    id: "20250323-005",
-    name: "진도 특상품 김",
-    type: "파래김",
-    origin: "진도",
-    specification: "100매(220g)",
-    productionDate: "2025-01-25",
-    year: 2025,
-    grade: "A",
-    price: 13000,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-  {
-    id: "20250323-006",
-    name: "해남 일반 김",
-    type: "돌김",
-    origin: "해남",
-    specification: "60매(150g)",
-    productionDate: "2024-12-10",
-    year: 2024,
-    grade: "B",
-    price: 9000,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-  {
-    id: "20250323-007",
-    name: "신안 특상품 김",
-    type: "마른김",
-    origin: "신안",
-    specification: "100매(220g)",
-    productionDate: "2025-02-10",
-    year: 2025,
-    grade: "A+",
-    price: 15500,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-  {
-    id: "20250323-008",
-    name: "여수 일반 김",
-    type: "조미김",
-    origin: "여수",
-    specification: "70매(180g)",
-    productionDate: "2024-11-20",
-    year: 2024,
-    grade: "B+",
-    price: 9500,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-  {
-    id: "20250323-009",
-    name: "보령 특상품 김",
-    type: "파래김",
-    origin: "보령",
-    specification: "90매(200g)",
-    productionDate: "2025-01-05",
-    year: 2025,
-    grade: "A",
-    price: 13500,
-    image: "/placeholder.svg?height=300&width=400",
-    available: true,
-  },
-]
-
-// Filter options
-const origins = [
-  { value: "all", label: "전체 지역" },
-  { value: "완도", label: "완도" },
-  { value: "고흥", label: "고흥" },
-  { value: "서천", label: "서천" },
-  { value: "부산", label: "부산" },
-  { value: "진도", label: "진도" },
-  { value: "해남", label: "해남" },
-  { value: "신안", label: "신안" },
-  { value: "여수", label: "여수" },
-  { value: "보령", label: "보령" },
-]
-
-const types = [
-  { value: "all", label: "전체 종류" },
-  { value: "마른김", label: "마른김" },
-  { value: "조미김", label: "조미김" },
-  { value: "파래김", label: "파래김" },
-  { value: "돌김", label: "돌김" },
-]
-
-const years = [
-  { value: "all", label: "전체 연도" },
-  { value: "2025", label: "2025년" },
-  { value: "2024", label: "2024년" },
-]
-
-const grades = [
-  { value: "all", label: "전체 등급", stars: 0 },
-  { value: "A+", label: "A+ (최상급)", stars: 5 },
-  { value: "A", label: "A (상급)", stars: 4 },
-  { value: "B+", label: "B+ (중급)", stars: 3 },
-  { value: "B", label: "B (일반)", stars: 2 },
-]
-
-// Helper function to render grade stars
-const renderGradeStars = (grade: string) => {
-  switch (grade) {
-    case "A+":
-      return (
-        <div className="flex">
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-        </div>
-      )
-    case "A":
-      return (
-        <div className="flex">
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 text-gray-300" />
-        </div>
-      )
-    case "B+":
-      return (
-        <div className="flex">
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 text-gray-300" />
-          <Star className="h-4 w-4 text-gray-300" />
-        </div>
-      )
-    case "B":
-      return (
-        <div className="flex">
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 text-gray-300" />
-          <Star className="h-4 w-4 text-gray-300" />
-          <Star className="h-4 w-4 text-gray-300" />
-        </div>
-      )
-    default:
-      return null
-  }
-}
+import Image from "next/image"
+import { Search, Grid, List, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { StarRating } from "@/components/star-rating"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function ProductsPage() {
-  const [filters, setFilters] = useState({
-    type: "all",
-    origin: "all",
-    year: "all",
-    grade: "all",
-  })
+  // 상태 관리
   const [searchTerm, setSearchTerm] = useState("")
-  const [filteredProducts, setFilteredProducts] = useState(products)
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [tradeType, setTradeType] = useState<"all" | "fixed" | "auction">("all")
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([])
+  const [selectedOrigins, setSelectedOrigins] = useState<string[]>([])
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
+  const [selectedWeights, setSelectedWeights] = useState<string[]>([])
+  const [selectedGrades, setSelectedGrades] = useState<string[]>([])
+  const [sortOption, setSortOption] = useState("latest")
 
-  // Apply filters and search
-  useEffect(() => {
-    const filtered = products.filter((product) => {
-      // Apply search term
-      if (
-        searchTerm &&
-        !product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !product.origin.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !product.type.toLowerCase().includes(searchTerm.toLowerCase())
-      ) {
-        return false
-      }
+  // 김 종류 옵션
+  const productTypes = [
+    { id: "traditional", name: "재래김" },
+    { id: "green", name: "파래김" },
+    { id: "sushi", name: "김밥김" },
+    { id: "intestine", name: "곱창김" },
+    { id: "stone", name: "돌김" },
+    { id: "dried", name: "자반김" },
+  ]
 
-      // Apply filters
-      if (filters.type !== "all" && product.type !== filters.type) return false
-      if (filters.origin !== "all" && product.origin !== filters.origin) return false
-      if (filters.year !== "all" && product.year !== Number.parseInt(filters.year)) return false
-      if (filters.grade !== "all" && product.grade !== filters.grade) return false
+  // 산지 옵션
+  const origins = [
+    { id: "korea", name: "한국" },
+    { id: "china", name: "중국" },
+  ]
 
-      return true
-    })
+  // 규격 옵션
+  const sizes = [
+    { id: "19x21", name: "19×21" },
+    { id: "19x27", name: "19×27" },
+    { id: "21x21", name: "21×21" },
+  ]
 
-    setFilteredProducts(filtered)
-  }, [filters, searchTerm])
+  // 중량 옵션
+  const weights = [
+    { id: "230g", name: "230g" },
+    { id: "260g", name: "260g" },
+    { id: "280g", name: "280g" },
+    { id: "300g", name: "300g" },
+    { id: "320g", name: "320g" },
+  ]
 
-  // Handle filter change
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFilters((prev) => ({ ...prev, [name]: value }))
+  // 등급 옵션
+  const grades = [
+    { id: "A+", name: "A+", stars: 5 },
+    { id: "A", name: "A", stars: 4 },
+    { id: "B+", name: "B+", stars: 3 },
+    { id: "B", name: "B", stars: 2 },
+    { id: "C", name: "C", stars: 1 },
+  ]
+
+  // 필터 토글 함수
+  const toggleFilter = (id: string, type: "type" | "origin" | "size" | "weight" | "grade") => {
+    switch (type) {
+      case "type":
+        setSelectedTypes((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+        break
+      case "origin":
+        setSelectedOrigins((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+        break
+      case "size":
+        setSelectedSizes((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+        break
+      case "weight":
+        setSelectedWeights((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+        break
+      case "grade":
+        setSelectedGrades((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+        break
+    }
   }
 
-  // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
+  // 필터 초기화
+  const resetFilters = () => {
+    setSearchTerm("")
+    setTradeType("all")
+    setSelectedTypes([])
+    setSelectedOrigins([])
+    setSelectedSizes([])
+    setSelectedWeights([])
+    setSelectedGrades([])
+    setSortOption("latest")
   }
 
-  // Handle grade filter click
-  const handleGradeClick = (grade: string) => {
-    setFilters((prev) => ({ ...prev, grade: prev.grade === grade ? "all" : grade }))
-  }
+  // Mock data for demonstration
+  const products = [
+    {
+      id: 1,
+      name: "완도 특상품 김",
+      type: "재래김",
+      origin: "한국",
+      originDetail: "완도",
+      size: "19×27",
+      weight: "220g",
+      grade: "A+",
+      price: "15,000",
+      unit: "kg",
+      stock: 260,
+      code: "20250323-001",
+      year: "2025",
+      image: "/underwater-seaweed.png",
+      isAuction: false,
+    },
+    {
+      id: 2,
+      name: "고흥 일반 김",
+      type: "파래김",
+      origin: "한국",
+      originDetail: "고흥",
+      size: "19×27",
+      weight: "200g",
+      grade: "A",
+      price: "12,000",
+      unit: "kg",
+      stock: 180,
+      code: "20250323-002",
+      year: "2025",
+      image: "/placeholder.svg?key=tsmht",
+      isAuction: false,
+    },
+    {
+      id: 3,
+      name: "서천 특상품 김",
+      type: "김밥김",
+      origin: "한국",
+      originDetail: "서천",
+      size: "19×21",
+      weight: "220g",
+      grade: "A+",
+      price: "14,500",
+      unit: "kg",
+      stock: 150,
+      code: "20250323-003",
+      year: "2025",
+      image: "/placeholder.svg?key=lkbra",
+      isAuction: true,
+      auctionEndTime: "2025-05-19 00:00",
+    },
+    {
+      id: 4,
+      name: "신안 특상품 김",
+      type: "곱창김",
+      origin: "한국",
+      originDetail: "신안",
+      size: "19×27",
+      weight: "250g",
+      grade: "B+",
+      price: "13,000",
+      unit: "kg",
+      stock: 200,
+      code: "20250323-004",
+      year: "2025",
+      image: "/placeholder.svg?key=sy6bn",
+      isAuction: false,
+    },
+    {
+      id: 5,
+      name: "부산 프리미엄 김",
+      type: "돌김",
+      origin: "한국",
+      originDetail: "부산",
+      size: "21×21",
+      weight: "230g",
+      grade: "A+",
+      price: "16,500",
+      unit: "kg",
+      stock: 120,
+      code: "20250323-005",
+      year: "2025",
+      image: "/placeholder.svg?key=8jtk4",
+      isAuction: true,
+      auctionEndTime: "2025-06-10 00:00",
+    },
+    {
+      id: 6,
+      name: "해남 고급 김",
+      type: "자반김",
+      origin: "한국",
+      originDetail: "해남",
+      size: "19×27",
+      weight: "280g",
+      grade: "A",
+      price: "14,000",
+      unit: "kg",
+      stock: 180,
+      code: "20250323-006",
+      year: "2025",
+      image: "/placeholder.svg?key=3p3f7",
+      isAuction: false,
+    },
+    {
+      id: 7,
+      name: "청도 프리미엄 김",
+      type: "재래김",
+      origin: "중국",
+      originDetail: "청도",
+      size: "19×27",
+      weight: "300g",
+      grade: "B+",
+      price: "11,000",
+      unit: "kg",
+      stock: 90,
+      code: "20250323-007",
+      year: "2025",
+      image: "/placeholder.svg?key=fpn5g",
+      isAuction: true,
+      auctionEndTime: "2025-05-25 00:00",
+    },
+    {
+      id: 8,
+      name: "상해 특선 김",
+      type: "파래김",
+      origin: "중국",
+      originDetail: "상해",
+      size: "19×27",
+      weight: "260g",
+      grade: "A",
+      price: "12,500",
+      unit: "kg",
+      stock: 110,
+      code: "20250323-008",
+      year: "2025",
+      image: "/placeholder.svg?key=jrziw",
+      isAuction: false,
+    },
+    {
+      id: 9,
+      name: "웨이하이 프리미엄 김",
+      type: "김밥김",
+      origin: "중국",
+      originDetail: "웨이하이",
+      size: "19×21",
+      weight: "270g",
+      grade: "A+",
+      price: "13,500",
+      unit: "kg",
+      stock: 85,
+      code: "20250323-009",
+      year: "2025",
+      image: "/placeholder.svg?key=rntly",
+      isAuction: true,
+      auctionEndTime: "2025-06-15 00:00",
+    },
+  ]
+
+  // 필터링된 상품 목록
+  const filteredProducts = products.filter((product) => {
+    // 검색어 필터링
+    if (searchTerm && !product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false
+    }
+
+    // 거래 방식 필터링
+    if (tradeType === "auction" && !product.isAuction) return false
+    if (tradeType === "fixed" && product.isAuction) return false
+
+    // 김 종류 필터링
+    if (selectedTypes.length > 0 && !selectedTypes.includes(product.type)) return false
+
+    // 산지 필터링
+    if (selectedOrigins.length > 0 && !selectedOrigins.includes(product.origin)) return false
+
+    // 규격 필터링
+    if (selectedSizes.length > 0 && !selectedSizes.includes(product.size)) return false
+
+    // 중량 필터링
+    if (selectedWeights.length > 0 && !selectedWeights.includes(product.weight)) return false
+
+    // 등급 필터링
+    if (selectedGrades.length > 0 && !selectedGrades.includes(product.grade)) return false
+
+    return true
+  })
+
+  // 정렬된 상품 목록
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortOption) {
+      case "priceAsc":
+        return Number.parseInt(a.price.replace(/,/g, "")) - Number.parseInt(b.price.replace(/,/g, ""))
+      case "priceDesc":
+        return Number.parseInt(b.price.replace(/,/g, "")) - Number.parseInt(a.price.replace(/,/g, ""))
+      case "gradeDesc":
+        const gradeOrder: { [key: string]: number } = { "A+": 5, A: 4, "B+": 3, B: 2, C: 1 }
+        return gradeOrder[b.grade] - gradeOrder[a.grade]
+      case "latest":
+      default:
+        return b.id - a.id
+    }
+  })
 
   return (
-    <div className="py-12 bg-gray-50">
-      <div className="container-custom">
-        <h1 className="text-3xl font-bold mb-8">김 제품 목록</h1>
+    <div className="min-h-screen bg-[#F9FAFB]">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center">
+              <span className="text-xl font-bold text-[#F95700]">김 국제거래소 B2B</span>
+            </Link>
+          </div>
 
-        {/* Search Bar */}
-        <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
+          <nav className="hidden md:flex md:items-center md:space-x-6">
+            <Link href="/products" className="text-sm font-medium text-[#F95700]">
+              제품 보기
+            </Link>
+            <Link href="/market-price" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
+              시세 정보
+            </Link>
+            <Link href="/notice" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
+              공지사항
+            </Link>
+            <Link href="/my/reservations" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
+              예약 내역
+            </Link>
+          </nav>
+
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <select className="h-9 rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm">
+                <option value="ko">한국어</option>
+                <option value="en" disabled>
+                  English
+                </option>
+                <option value="zh" disabled>
+                  中文
+                </option>
+              </select>
             </div>
-            <input
+            <Link href="/signup">
+              <Button size="sm">회원가입</Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        {/* Breadcrumb */}
+        <div className="mb-4 flex items-center text-sm text-gray-500">
+          <Link href="/" className="hover:text-[#F95700]">
+            홈
+          </Link>
+          <ChevronRight className="mx-1 h-4 w-4" />
+          <Link href="/products" className="hover:text-[#F95700]">
+            전체상품
+          </Link>
+          <ChevronRight className="mx-1 h-4 w-4" />
+          <span className="text-gray-700">상품검색</span>
+        </div>
+
+        <h1 className="mb-6 text-3xl font-bold">김 제품 목록</h1>
+
+        {/* 검색창 */}
+        <div className="mb-6">
+          <div className="relative">
+            <Input
               type="text"
               placeholder="제품명, 지역, 종류 검색..."
               value={searchTerm}
-              onChange={handleSearchChange}
-              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="h-12 pl-12 pr-4 text-base"
             />
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white p-4 rounded-lg shadow-sm mb-8">
-          <h2 className="text-lg font-medium mb-4">필터</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Type Filter */}
-            <div>
-              <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-                김 종류
-              </label>
-              <select
-                id="type"
-                name="type"
-                value={filters.type}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                {types.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+        {/* 필터 영역 */}
+        <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-lg font-bold">필터</h2>
+            <Button variant="outline" size="sm" onClick={resetFilters}>
+              필터 초기화
+            </Button>
+          </div>
 
-            {/* Origin Filter */}
-            <div>
-              <label htmlFor="origin" className="block text-sm font-medium text-gray-700 mb-1">
-                원산지
-              </label>
-              <select
-                id="origin"
-                name="origin"
-                value={filters.origin}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          {/* 거래방식 필터 */}
+          <div className="mb-6">
+            <h3 className="mb-3 font-medium">거래방식</h3>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={tradeType === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTradeType("all")}
+                className={tradeType === "all" ? "bg-[#F95700]" : ""}
               >
-                {origins.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Year Filter */}
-            <div>
-              <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
-                생산연도
-              </label>
-              <select
-                id="year"
-                name="year"
-                value={filters.year}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                전체
+              </Button>
+              <Button
+                variant={tradeType === "fixed" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTradeType("fixed")}
+                className={tradeType === "fixed" ? "bg-[#F95700]" : ""}
               >
-                {years.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Grade Filter - Dropdown for mobile */}
-            <div className="md:hidden">
-              <label htmlFor="grade-mobile" className="block text-sm font-medium text-gray-700 mb-1">
-                등급
-              </label>
-              <select
-                id="grade-mobile"
-                name="grade"
-                value={filters.grade}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                정가거래
+              </Button>
+              <Button
+                variant={tradeType === "auction" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTradeType("auction")}
+                className={tradeType === "auction" ? "bg-[#F95700]" : ""}
               >
-                {grades.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                입찰거래
+              </Button>
             </div>
           </div>
 
-          {/* Grade Filter - Star Rating for desktop */}
-          <div className="hidden md:block mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">등급</label>
-            <div className="flex flex-wrap gap-3">
-              {grades.map((grade) => (
-                <button
-                  key={grade.value}
-                  onClick={() => handleGradeClick(grade.value)}
-                  className={`flex items-center px-3 py-2 rounded-md border ${
-                    filters.grade === grade.value
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
-                >
-                  {grade.value === "all" ? (
-                    <span>전체 등급</span>
-                  ) : (
-                    <>
-                      <span className="mr-2">{grade.value}</span>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${
-                              i < grade.stars ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </button>
-              ))}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* 김 종류 필터 */}
+            <div>
+              <h3 className="mb-3 font-medium">김 종류</h3>
+              <div className="flex flex-wrap gap-2">
+                {productTypes.map((type) => (
+                  <Button
+                    key={type.id}
+                    variant={selectedTypes.includes(type.name) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => toggleFilter(type.name, "type")}
+                    className={selectedTypes.includes(type.name) ? "bg-[#F95700]" : ""}
+                  >
+                    {type.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* 산지 필터 */}
+            <div>
+              <h3 className="mb-3 font-medium">산지</h3>
+              <div className="flex flex-wrap gap-2">
+                {origins.map((origin) => (
+                  <Button
+                    key={origin.id}
+                    variant={selectedOrigins.includes(origin.name) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => toggleFilter(origin.name, "origin")}
+                    className={selectedOrigins.includes(origin.name) ? "bg-[#F95700]" : ""}
+                  >
+                    {origin.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* 규격 필터 */}
+            <div>
+              <h3 className="mb-3 font-medium">규격</h3>
+              <div className="flex flex-wrap gap-2">
+                {sizes.map((size) => (
+                  <Button
+                    key={size.id}
+                    variant={selectedSizes.includes(size.name) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => toggleFilter(size.name, "size")}
+                    className={selectedSizes.includes(size.name) ? "bg-[#F95700]" : ""}
+                  >
+                    {size.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* 중량 필터 */}
+            <div>
+              <h3 className="mb-3 font-medium">중량</h3>
+              <div className="flex flex-wrap gap-2">
+                {weights.map((weight) => (
+                  <Button
+                    key={weight.id}
+                    variant={selectedWeights.includes(weight.name) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => toggleFilter(weight.name, "weight")}
+                    className={selectedWeights.includes(weight.name) ? "bg-[#F95700]" : ""}
+                  >
+                    {weight.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* 등급 필터 */}
+            <div>
+              <h3 className="mb-3 font-medium">등급</h3>
+              <div className="flex flex-wrap gap-4">
+                {grades.map((grade) => (
+                  <button
+                    key={grade.id}
+                    className={`flex items-center gap-1 rounded-md border p-2 ${
+                      selectedGrades.includes(grade.id) ? "border-[#F95700] bg-orange-50" : "border-gray-200"
+                    }`}
+                    onClick={() => toggleFilter(grade.id, "grade")}
+                  >
+                    <StarRating grade={grade.id} size={16} />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Active Filters */}
-        {(filters.type !== "all" ||
-          filters.origin !== "all" ||
-          filters.year !== "all" ||
-          filters.grade !== "all" ||
-          searchTerm) && (
-          <div className="mb-6 flex flex-wrap gap-2 items-center">
-            <span className="text-sm text-gray-600">적용된 필터:</span>
-
-            {searchTerm && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100">
-                검색: {searchTerm}
-                <button className="ml-2 text-gray-500 hover:text-gray-700" onClick={() => setSearchTerm("")}>
-                  ×
-                </button>
-              </span>
-            )}
-
-            {filters.type !== "all" && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100">
-                종류: {filters.type}
-                <button
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                  onClick={() => setFilters((prev) => ({ ...prev, type: "all" }))}
-                >
-                  ×
-                </button>
-              </span>
-            )}
-
-            {filters.origin !== "all" && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100">
-                원산지: {filters.origin}
-                <button
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                  onClick={() => setFilters((prev) => ({ ...prev, origin: "all" }))}
-                >
-                  ×
-                </button>
-              </span>
-            )}
-
-            {filters.year !== "all" && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100">
-                연도: {filters.year}년
-                <button
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                  onClick={() => setFilters((prev) => ({ ...prev, year: "all" }))}
-                >
-                  ×
-                </button>
-              </span>
-            )}
-
-            {filters.grade !== "all" && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100">
-                등급: {filters.grade}
-                <button
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                  onClick={() => setFilters((prev) => ({ ...prev, grade: "all" }))}
-                >
-                  ×
-                </button>
-              </span>
-            )}
-
-            <button
-              className="text-sm text-primary hover:underline ml-auto"
-              onClick={() => {
-                setFilters({
-                  type: "all",
-                  origin: "all",
-                  year: "all",
-                  grade: "all",
-                })
-                setSearchTerm("")
-              }}
-            >
-              모든 필터 초기화
-            </button>
+        {/* 정렬 및 뷰 옵션 */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">총 {sortedProducts.length}개 상품</span>
           </div>
-        )}
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => (
-            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
-              {!product.available && (
-                <div className="absolute top-0 right-0 bg-gray-800 text-white py-1 px-3 text-sm font-medium">
-                  예약 완료
-                </div>
-              )}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">정렬:</span>
+              <Select value={sortOption} onValueChange={setSortOption}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="latest">최신순</SelectItem>
+                  <SelectItem value="priceAsc">가격 낮은순</SelectItem>
+                  <SelectItem value="priceDesc">가격 높은순</SelectItem>
+                  <SelectItem value="gradeDesc">등급순</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-              <Link href={`/products/${product.id}`}>
-                <div className="h-48 overflow-hidden">
-                  <img
+            <div className="flex items-center gap-2">
+              <button
+                className={`rounded-md p-1 ${viewMode === "grid" ? "bg-gray-200" : ""}`}
+                onClick={() => setViewMode("grid")}
+                aria-label="그리드 보기"
+              >
+                <Grid className="h-5 w-5" />
+              </button>
+              <button
+                className={`rounded-md p-1 ${viewMode === "list" ? "bg-gray-200" : ""}`}
+                onClick={() => setViewMode("list")}
+                aria-label="리스트 보기"
+              >
+                <List className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 상품 목록 - 그리드 뷰 */}
+        {viewMode === "grid" && (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {sortedProducts.map((product) => (
+              <Card key={product.id} className="overflow-hidden bg-white">
+                <div className="relative aspect-square overflow-hidden">
+                  <Image
                     src={product.image || "/placeholder.svg"}
                     alt={product.name}
-                    className="w-full h-full object-cover transition-transform hover:scale-105"
+                    fill
+                    className="object-cover transition-transform duration-300 hover:scale-105"
                   />
+                  <div className="absolute right-2 top-2">
+                    <Badge
+                      className={`${
+                        product.isAuction ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
+                      }`}
+                    >
+                      {product.isAuction ? "입찰거래" : "정가거래"}
+                    </Badge>
+                  </div>
+                  {product.isAuction && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-red-500 bg-opacity-80 p-2 text-center text-xs font-medium text-white">
+                      예약판매 마감: {product.auctionEndTime}
+                    </div>
+                  )}
                 </div>
-
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-lg font-semibold">{product.name}</h2>
-                    <div className="flex items-center">{renderGradeStars(product.grade)}</div>
+                <CardContent className="p-4">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">{product.name}</h3>
+                    <StarRating grade={product.grade} size={14} />
                   </div>
-
-                  <div className="text-sm text-gray-600 mb-2">
-                    <p>종류: {product.type}</p>
-                    <p>원산지: {product.origin}</p>
-                    <p>규격: {product.specification}</p>
-                    <p>생산연도: {product.year}년</p>
-                    <p>고유번호: {product.id}</p>
+                  <div className="mb-3 text-sm text-gray-600">
+                    <div className="flex flex-wrap gap-x-2">
+                      <span>종류: {product.type}</span>
+                      <span>•</span>
+                      <span>산지: {product.originDetail}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-2">
+                      <span>규격: {product.size}</span>
+                      <span>•</span>
+                      <span>중량: {product.weight}</span>
+                    </div>
+                    <div>
+                      <span>코드: {product.code}</span>
+                    </div>
                   </div>
-
-                  <div className="flex justify-between items-center mt-4">
-                    <div className="text-lg font-bold text-primary">₩{product.price.toLocaleString()}/kg</div>
-
-                    {product.available ? (
-                      <span className="text-sm text-green-600 font-medium">예약 가능</span>
-                    ) : (
-                      <span className="text-sm text-gray-500 font-medium">예약 완료</span>
-                    )}
+                  <div className="mt-4 text-right">
+                    <span className="text-lg font-bold text-[#F95700]">
+                      ₩{product.price}/{product.unit}
+                    </span>
                   </div>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-gray-600">검색 결과가 없습니다.</p>
-            <button
-              className="mt-4 text-primary hover:underline"
-              onClick={() => {
-                setFilters({
-                  type: "all",
-                  origin: "all",
-                  year: "all",
-                  grade: "all",
-                })
-                setSearchTerm("")
-              }}
-            >
-              모든 필터 초기화
-            </button>
+                </CardContent>
+                <CardFooter className="border-t p-4">
+                  <Link
+                    href={product.isAuction ? `/products/${product.id}/auction` : `/products/${product.id}`}
+                    className="w-full"
+                  >
+                    <Button className="w-full bg-[#F95700] hover:bg-[#E04E00]">
+                      {product.isAuction ? "입찰 참여" : "거래하기"}
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))}
           </div>
         )}
-      </div>
+
+        {/* 상품 목록 - 리스트 뷰 */}
+        {viewMode === "list" && (
+          <div className="space-y-4">
+            {sortedProducts.map((product) => (
+              <div
+                key={product.id}
+                className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white sm:flex-row"
+              >
+                <div className="relative h-48 w-full sm:h-auto sm:w-48">
+                  <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
+                  <div className="absolute right-2 top-2">
+                    <Badge
+                      className={`${
+                        product.isAuction ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
+                      }`}
+                    >
+                      {product.isAuction ? "입찰거래" : "정가거래"}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="flex flex-1 flex-col p-4">
+                  <div className="mb-2 flex items-start justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">{product.name}</h3>
+                      <div className="mt-1 flex items-center">
+                        <StarRating grade={product.grade} size={14} />
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-[#F95700]">
+                      ₩{product.price}/{product.unit}
+                    </span>
+                  </div>
+                  <div className="mb-4 text-sm text-gray-600">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                      <div>종류: {product.type}</div>
+                      <div>산지: {product.originDetail}</div>
+                      <div>규격: {product.size}</div>
+                      <div>중량: {product.weight}</div>
+                      <div>코드: {product.code}</div>
+                      <div>생산년도: {product.year}</div>
+                    </div>
+                  </div>
+                  {product.isAuction && (
+                    <div className="mb-4 rounded-md bg-red-50 p-2 text-sm text-red-600">
+                      예약판매 마감: {product.auctionEndTime}
+                    </div>
+                  )}
+                  <div className="mt-auto">
+                    <Link
+                      href={product.isAuction ? `/products/${product.id}/auction` : `/products/${product.id}`}
+                      className="w-full"
+                    >
+                      <Button className="w-full bg-[#F95700] hover:bg-[#E04E00]">
+                        {product.isAuction ? "입찰 참여" : "거래하기"}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 페이지네이션 */}
+        <div className="mt-8 flex justify-center">
+          <nav className="flex items-center gap-1">
+            <Button variant="outline" size="sm" disabled>
+              이전
+            </Button>
+            <Button variant="default" size="sm" className="bg-[#F95700]">
+              1
+            </Button>
+            <Button variant="outline" size="sm">
+              2
+            </Button>
+            <Button variant="outline" size="sm">
+              3
+            </Button>
+            <Button variant="outline" size="sm">
+              다음
+            </Button>
+          </nav>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 py-12 text-gray-300">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-white">김 국제거래소 B2B</h3>
+              <p className="mb-4 text-sm">전 세계 바이어를 위한 김 B2B 거래 플랫폼</p>
+              <p className="text-sm">© 2025 김 국제거래소 B2B. All rights reserved.</p>
+            </div>
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
+              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
+              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
+              <p className="text-sm">전화: 02-123-4567</p>
+            </div>
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-white">링크</h3>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link href="/terms" className="hover:text-white">
+                    이용약관
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="hover:text-white">
+                    개인정보처리방침
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="hover:text-white">
+                    자주 묻는 질문
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-white">
+                    문의하기
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
