@@ -11,8 +11,8 @@ const pretendard = Pretendard({
 })
 
 export const metadata: Metadata = {
-  title: "국제거래소 B2B 관리자",
-  description: "국제거래소 B2B 웹사이트 관리자 대시보드",
+  title: "국제거래소 B2B 사이트트",
+  description: "국제거래소 B2B 웹사이트",
 }
 
 export default function RootLayout({
