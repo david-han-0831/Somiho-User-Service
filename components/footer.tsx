@@ -37,9 +37,10 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">연락처</h3>
             <address className="text-sm text-gray-300 not-italic">
-              <p>서울특별시 강남구 테헤란로 123</p>
-              <p>전화: 02-123-4567</p>
-              <p>이메일: info@koreaseafood-b2b.com</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </address>
           </div>
         </div>

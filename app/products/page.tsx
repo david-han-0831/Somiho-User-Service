@@ -109,11 +109,11 @@ export default function ProductsPage() {
       weight: "220g",
       grade: "A+",
       price: "15,000",
-      unit: "kg",
+      unit: "속",
       stock: 260,
       code: "20250323-001",
       year: "2025",
-      image: "/underwater-seaweed.png",
+      image: "/product_img/product_1.jpg",
       isAuction: false,
     },
     {
@@ -126,11 +126,11 @@ export default function ProductsPage() {
       weight: "200g",
       grade: "A",
       price: "12,000",
-      unit: "kg",
+      unit: "속",
       stock: 180,
       code: "20250323-002",
       year: "2025",
-      image: "/placeholder.svg?key=tsmht",
+      image: "/product_img/product_2.jpg",
       isAuction: false,
     },
     {
@@ -143,11 +143,11 @@ export default function ProductsPage() {
       weight: "220g",
       grade: "A+",
       price: "14,500",
-      unit: "kg",
+      unit: "속",
       stock: 150,
       code: "20250323-003",
       year: "2025",
-      image: "/placeholder.svg?key=lkbra",
+      image: "/product_img/product_3.jpg",
       isAuction: true,
       auctionEndTime: "2025-05-19 00:00",
     },
@@ -161,11 +161,11 @@ export default function ProductsPage() {
       weight: "250g",
       grade: "B+",
       price: "13,000",
-      unit: "kg",
+      unit: "속",
       stock: 200,
       code: "20250323-004",
       year: "2025",
-      image: "/placeholder.svg?key=sy6bn",
+      image: "/product_img/product_4.jpg",
       isAuction: false,
     },
     {
@@ -178,11 +178,11 @@ export default function ProductsPage() {
       weight: "230g",
       grade: "A+",
       price: "16,500",
-      unit: "kg",
+      unit: "속",
       stock: 120,
       code: "20250323-005",
       year: "2025",
-      image: "/placeholder.svg?key=8jtk4",
+      image: "/product_img/product_5.jpg",
       isAuction: true,
       auctionEndTime: "2025-06-10 00:00",
     },
@@ -196,11 +196,11 @@ export default function ProductsPage() {
       weight: "280g",
       grade: "A",
       price: "14,000",
-      unit: "kg",
+      unit: "속",
       stock: 180,
       code: "20250323-006",
       year: "2025",
-      image: "/placeholder.svg?key=3p3f7",
+      image: "/product_img/product_1.jpg",
       isAuction: false,
     },
     {
@@ -213,11 +213,11 @@ export default function ProductsPage() {
       weight: "300g",
       grade: "B+",
       price: "11,000",
-      unit: "kg",
+      unit: "속",
       stock: 90,
       code: "20250323-007",
       year: "2025",
-      image: "/placeholder.svg?key=fpn5g",
+      image: "/product_img/product_2.jpg",
       isAuction: true,
       auctionEndTime: "2025-05-25 00:00",
     },
@@ -231,11 +231,11 @@ export default function ProductsPage() {
       weight: "260g",
       grade: "A",
       price: "12,500",
-      unit: "kg",
+      unit: "속",
       stock: 110,
       code: "20250323-008",
       year: "2025",
-      image: "/placeholder.svg?key=jrziw",
+      image: "/product_img/product_3.jpg",
       isAuction: false,
     },
     {
@@ -248,11 +248,11 @@ export default function ProductsPage() {
       weight: "270g",
       grade: "A+",
       price: "13,500",
-      unit: "kg",
+      unit: "속",
       stock: 85,
       code: "20250323-009",
       year: "2025",
-      image: "/placeholder.svg?key=rntly",
+      image: "/product_img/product_4.jpg",
       isAuction: true,
       auctionEndTime: "2025-06-15 00:00",
     },
@@ -338,6 +338,9 @@ export default function ProductsPage() {
                 </option>
                 <option value="zh" disabled>
                   中文
+                </option>
+                <option value="ja" disabled>
+                  日本語
                 </option>
               </select>
             </div>
@@ -716,9 +719,10 @@ export default function ProductsPage() {
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
-              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
-              <p className="text-sm">전화: 02-123-4567</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">링크</h3>

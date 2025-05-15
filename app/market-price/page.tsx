@@ -10,6 +10,7 @@ import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 
 export default function MarketPricePage() {
   const [periodTab, setPeriodTab] = useState("weekly")
+  const [countryTab, setCountryTab] = useState("korea")
 
   // 오늘 날짜 기준 더미 데이터 (2025.05.06)
   const marketPrices = {
@@ -23,13 +24,11 @@ export default function MarketPricePage() {
       { date: "2025.04.30", price: "30,500", change: "-300", isUp: false },
     ],
     china: [
-      { date: "2025.05.06", price: "29,800", change: "+1,300", isUp: true },
-      { date: "2025.05.05", price: "28,500", change: "-500", isUp: false },
-      { date: "2025.05.04", price: "29,000", change: "+800", isUp: true },
-      { date: "2025.05.03", price: "28,200", change: "+200", isUp: true },
-      { date: "2025.05.02", price: "28,000", change: "-300", isUp: false },
-      { date: "2025.05.01", price: "28,300", change: "+300", isUp: true },
-      { date: "2025.04.30", price: "28,000", change: "-200", isUp: false },
+      { date: "2025-01-19", price: "54.21속 (38.70~67.90)", change: "+0.36", isUp: true },
+      { date: "2025-01-18", price: "53.85속 (36.50~63.90)", change: "-0.16", isUp: false },
+      { date: "2025-01-06", price: "54.01속 (36.30~67.90)", change: "-1.96", isUp: false },
+      { date: "2025-01-05", price: "55.97속 (40.10~63.70)", change: "+2.97", isUp: true },
+      
     ],
     japan: [
       { date: "2025.05.06", price: "36,200", change: "+1,200", isUp: true },
@@ -85,41 +84,40 @@ export default function MarketPricePage() {
     },
     china: {
       weekly: [
-        { date: "04.30", price: 28000 },
-        { date: "05.01", price: 28300 },
-        { date: "05.02", price: 28000 },
-        { date: "05.03", price: 28200 },
-        { date: "05.04", price: 29000 },
-        { date: "05.05", price: 28500 },
-        { date: "05.06", price: 29800 },
+        { date: "01.02", price: 52200 },
+        { date: "01.03", price: 52500 },
+        { date: "01.04", price: 53000 },
+        { date: "01.05", price: 55970 },
+        { date: "01.06", price: 54010 },
+        { date: "01.18", price: 53850 },
+        { date: "01.19", price: 54210 },
       ],
       monthly: [
-        { date: "04.06", price: 26800 },
-        { date: "04.10", price: 27000 },
-        { date: "04.15", price: 27400 },
-        { date: "04.20", price: 27200 },
-        { date: "04.25", price: 27500 },
-        { date: "04.30", price: 28000 },
-        { date: "05.01", price: 28300 },
-        { date: "05.02", price: 28000 },
-        { date: "05.03", price: 28200 },
-        { date: "05.04", price: 29000 },
-        { date: "05.05", price: 28500 },
-        { date: "05.06", price: 29800 },
+        { date: "12.15", price: 51200 },
+        { date: "12.20", price: 51800 },
+        { date: "12.25", price: 52500 },
+        { date: "12.30", price: 53000 },
+        { date: "01.02", price: 52200 },
+        { date: "01.03", price: 52500 },
+        { date: "01.04", price: 53000 },
+        { date: "01.05", price: 55970 },
+        { date: "01.06", price: 54010 },
+        { date: "01.18", price: 53850 },
+        { date: "01.19", price: 54210 },
       ],
       yearly: [
-        { date: "2024.06", price: 25800 },
-        { date: "2024.07", price: 26100 },
-        { date: "2024.08", price: 26000 },
-        { date: "2024.09", price: 26200 },
-        { date: "2024.10", price: 26700 },
-        { date: "2024.11", price: 26500 },
-        { date: "2024.12", price: 26800 },
-        { date: "2025.01", price: 27500 },
-        { date: "2025.02", price: 27200 },
-        { date: "2025.03", price: 27700 },
-        { date: "2025.04", price: 28500 },
-        { date: "2025.05", price: 29800 },
+        { date: "2024.02", price: 25800 },
+        { date: "2024.03", price: 26100 },
+        { date: "2024.04", price: 26000 },
+        { date: "2024.05", price: 26200 },
+        { date: "2024.06", price: 26700 },
+        { date: "2024.07", price: 26500 },
+        { date: "2024.08", price: 26800 },
+        { date: "2024.09", price: 27500 },
+        { date: "2024.10", price: 27900 },
+        { date: "2024.11", price: 28200 },
+        { date: "2024.12", price: 53000 },
+        { date: "2025.01", price: 54210 },
       ],
     },
     japan: {
@@ -174,12 +172,70 @@ export default function MarketPricePage() {
       { date: "2025.05.05", type: "김밥김", spec: "19x27", price: "34,800", origin: "완도", grade: 5 },
     ],
     china: [
-      { date: "2025.05.06", type: "재래김", spec: "19x21", price: "29,800", origin: "칭다오", grade: 4 },
-      { date: "2025.05.06", type: "파래김", spec: "19x21", price: "28,500", origin: "칭다오", grade: 3 },
-      { date: "2025.05.06", type: "김밥김", spec: "19x27", price: "31,200", origin: "칭다오", grade: 4 },
-      { date: "2025.05.05", type: "재래김", spec: "19x21", price: "28,500", origin: "칭다오", grade: 4 },
-      { date: "2025.05.05", type: "파래김", spec: "19x21", price: "27,200", origin: "칭다오", grade: 3 },
-      { date: "2025.05.05", type: "김밥김", spec: "19x27", price: "30,000", origin: "칭다오", grade: 4 },
+      { date: "2025-01-19", type: "거래정보", spec: "", price: "", origin: "", grade: 0,
+        special: {
+          시장명: "롄윈강간위",
+          출품기업수: "84",
+          입찰기업수: "82",
+          출품카톤수: "72,856",
+          출품매수: "345,046,200",
+          거래카톤수: "49,954",
+          거래매수: "235,164,600",
+          거래금액: "12,747.27",
+          낙찰율: "68.15%",
+          평균단가: "54.21속",
+          최저가: "38.70속",
+          최고가: "67.90속"
+        }
+      },
+      { date: "2025-01-18", type: "거래정보", spec: "", price: "", origin: "", grade: 0,
+        special: {
+          시장명: "례윈강샹신",
+          출품기업수: "77",
+          입찰기업수: "77",
+          출품카톤수: "45,301",
+          출품매수: "217,438,800",
+          거래카톤수: "36,068",
+          거래매수: "173,120,400",
+          거래금액: "9,323.29",
+          낙찰율: "79.62%",
+          평균단가: "53.85속",
+          최저가: "36.50속",
+          최고가: "63.90속"
+        }
+      },
+      { date: "2025-01-06", type: "거래정보", spec: "", price: "", origin: "", grade: 0,
+        special: {
+          시장명: "롄윈강간위",
+          출품기업수: "74",
+          입찰기업수: "72",
+          출품카톤수: "66,571",
+          출품매수: "315,165,000",
+          거래카톤수: "47,690",
+          거래매수: "224,563,200",
+          거래금액: "12,129.43",
+          낙찰율: "71.25%",
+          평균단가: "54.01속",
+          최저가: "36.30속",
+          최고가: "67.90속"
+        }
+      },
+      { date: "2025-01-05", type: "거래정보", spec: "", price: "", origin: "", grade: 0,
+        special: {
+          시장명: "례윈강샹신",
+          출품기업수: "68",
+          입찰기업수: "67",
+          출품카톤수: "38,518",
+          출품매수: "184,799,400",
+          거래카톤수: "30,184",
+          거래매수: "144,810,600",
+          거래금액: "8,105.10",
+          낙찰율: "78.36%",
+          평균단가: "55.97속",
+          최저가: "40.10속",
+          최고가: "63.70속"
+        }
+      }
     ],
     japan: [
       { date: "2025.05.06", type: "재래김", spec: "19x21", price: "36,200", origin: "규슈", grade: 5 },
@@ -243,6 +299,9 @@ export default function MarketPricePage() {
                 <option value="zh" disabled>
                   中文
                 </option>
+                <option value="ja" disabled>
+                  日本語
+                </option>
               </select>
             </div>
             <Link href="/signup">
@@ -263,11 +322,33 @@ export default function MarketPricePage() {
 
         <h1 className="mb-8 text-3xl font-bold">김 시세 정보</h1>
 
-        <Tabs defaultValue="korea" className="mb-8">
+        <Tabs 
+          defaultValue="korea" 
+          className="mb-8"
+          onValueChange={(value) => setCountryTab(value)}
+        >
           <TabsList className="grid w-full max-w-md grid-cols-3">
-            <TabsTrigger value="korea">🇰🇷 한국</TabsTrigger>
-            <TabsTrigger value="china">🇨🇳 중국</TabsTrigger>
-            <TabsTrigger value="japan">🇯🇵 일본</TabsTrigger>
+            <TabsTrigger 
+              value="korea" 
+              className={countryTab === "korea" ? "!bg-[#F95700] !text-white hover:!text-white" : ""}
+              style={countryTab === "korea" ? { backgroundColor: "#F95700", color: "white" } : {}}
+            >
+              🇰🇷 한국
+            </TabsTrigger>
+            <TabsTrigger 
+              value="china" 
+              className={countryTab === "china" ? "!bg-[#F95700] !text-white hover:!text-white" : ""}
+              style={countryTab === "china" ? { backgroundColor: "#F95700", color: "white" } : {}}
+            >
+              🇨🇳 중국
+            </TabsTrigger>
+            <TabsTrigger 
+              value="japan" 
+              className={countryTab === "japan" ? "!bg-[#F95700] !text-white hover:!text-white" : ""}
+              style={countryTab === "japan" ? { backgroundColor: "#F95700", color: "white" } : {}}
+            >
+              🇯🇵 일본
+            </TabsTrigger>
           </TabsList>
 
           {Object.entries(marketPrices).map(([country, prices]) => (
@@ -333,30 +414,75 @@ export default function MarketPricePage() {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
-                          <th className="px-4 py-3 font-semibold">날짜</th>
-                          <th className="px-4 py-3 font-semibold">김 종류</th>
-                          <th className="px-4 py-3 font-semibold">규격</th>
-                          <th className="px-4 py-3 font-semibold">단가</th>
-                          <th className="px-4 py-3 font-semibold">산지</th>
-                          <th className="px-4 py-3 font-semibold">품질 등급</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {detailedPrices[country as keyof typeof detailedPrices].map((item, index) => (
-                          <tr key={index} className="border-b border-gray-100 text-sm hover:bg-gray-50">
-                            <td className="px-4 py-4 font-medium text-gray-900">{item.date}</td>
-                            <td className="px-4 py-4 text-gray-700">{item.type}</td>
-                            <td className="px-4 py-4 text-gray-700">{item.spec}</td>
-                            <td className="px-4 py-4 font-medium text-gray-900">{item.price}원</td>
-                            <td className="px-4 py-4 text-gray-700">{item.origin}</td>
-                            <td className="px-4 py-4 text-gray-700">{renderStars(item.grade)}</td>
+                    {country === "china" ? (
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
+                            <th className="px-4 py-3 font-semibold">날짜</th>
+                            <th className="px-4 py-3 font-semibold">시장명</th>
+                            <th className="px-4 py-3 font-semibold">출품</th>
+                            <th className="px-4 py-3 font-semibold">거래</th>
+                            <th className="px-4 py-3 font-semibold">
+                              거래금액
+                              <br />
+                              <span className="text-xs">(단위: 만위안)</span>
+                            </th>
+                            <th className="px-4 py-3 font-semibold">낙찰율</th>
+                            <th className="px-4 py-3 font-semibold">단가</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {detailedPrices.china.map((item, index) => (
+                            <tr key={index} className="border-b border-gray-100 text-sm hover:bg-gray-50">
+                              <td className="px-4 py-4 font-medium text-gray-900">{item.date}</td>
+                              <td className="px-4 py-4 font-medium text-gray-900">{item.special?.시장명}</td>
+                              <td className="px-4 py-4 text-gray-700">
+                                <div>기업수: {item.special?.출품기업수}</div>
+                                <div>카톤수: {item.special?.출품카톤수}</div>
+                                <div>매수: {item.special?.출품매수}</div>
+                              </td>
+                              <td className="px-4 py-4 text-gray-700">
+                                <div>기업수: {item.special?.입찰기업수}</div>
+                                <div>카톤수: {item.special?.거래카톤수}</div>
+                                <div>매수: {item.special?.거래매수}</div>
+                              </td>
+                              <td className="px-4 py-4 font-medium text-gray-900">{item.special?.거래금액}</td>
+                              <td className="px-4 py-4 text-gray-700">{item.special?.낙찰율}</td>
+                              <td className="px-4 py-4 text-gray-700">
+                                <div>평균: {item.special?.평균단가}</div>
+                                <div>최저: {item.special?.최저가}</div>
+                                <div>최고: {item.special?.최고가}</div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
+                            <th className="px-4 py-3 font-semibold">날짜</th>
+                            <th className="px-4 py-3 font-semibold">김 종류</th>
+                            <th className="px-4 py-3 font-semibold">규격</th>
+                            <th className="px-4 py-3 font-semibold">단가</th>
+                            <th className="px-4 py-3 font-semibold">산지</th>
+                            <th className="px-4 py-3 font-semibold">품질 등급</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {detailedPrices[country as keyof typeof detailedPrices].map((item, index) => (
+                            <tr key={index} className="border-b border-gray-100 text-sm hover:bg-gray-50">
+                              <td className="px-4 py-4 font-medium text-gray-900">{item.date}</td>
+                              <td className="px-4 py-4 text-gray-700">{item.type}</td>
+                              <td className="px-4 py-4 text-gray-700">{item.spec}</td>
+                              <td className="px-4 py-4 font-medium text-gray-900">{item.price}원</td>
+                              <td className="px-4 py-4 text-gray-700">{item.origin}</td>
+                              <td className="px-4 py-4 text-gray-700">{renderStars(item.grade)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -380,7 +506,7 @@ export default function MarketPricePage() {
                         {prices.map((price, index) => (
                           <tr key={index} className="border-b border-gray-100 text-sm hover:bg-gray-50">
                             <td className="px-4 py-4 font-medium text-gray-900">{price.date}</td>
-                            <td className="px-4 py-4 font-medium text-gray-900">{price.price}원</td>
+                            <td className="px-4 py-4 font-medium text-gray-900">{price.price}{country === "china" ? "" : "원"}</td>
                             <td className={`px-4 py-4 ${price.isUp ? "text-red-500" : "text-blue-500"}`}>
                               {price.isUp ? "▲" : "▼"} {price.change}
                             </td>
@@ -398,7 +524,7 @@ export default function MarketPricePage() {
                   <div className="mb-4 md:mb-0">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">더 많은 시세 정보가 필요하신가요?</h3>
                     <p className="text-gray-700">
-                      회원가입하시면 상세 시세 정보와 차트, CSV 다운로드 기능을 이용하실 수 있습니다.
+                      회원가입하시면 상세 시세 정보와 차트, Excel 다운로드 기능을 이용하실 수 있습니다.
                     </p>
                   </div>
                   <Link href="/signup">
@@ -424,9 +550,10 @@ export default function MarketPricePage() {
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
-              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
-              <p className="text-sm">전화: 02-123-4567</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">링크</h3>

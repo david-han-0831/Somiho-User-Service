@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { StarRating } from "@/components/star-rating"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
+import React from "react"
 
-export default function AuctionProductDetailPage({ params }: { params: { id: string } }) {
+export default function AuctionProductDetailPage() {
   const router = useRouter()
+  const params = useParams<{ id: string }>()
   const productId = Number.parseInt(params.id)
   const [selectedImage, setSelectedImage] = useState(0)
   const [imageModalOpen, setImageModalOpen] = useState(false)
@@ -42,7 +44,7 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
     grade: "A+",
     startPrice: "12,000",
     currentPrice: "15,000",
-    unit: "kg",
+    unit: "속",
     stock: 260,
     code: "20250323-001",
     year: "2025",
@@ -65,10 +67,10 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
     deliveryInfo: "최소 주문 수량 10박스, 국내 배송 3-5일 소요, 해외 배송 7-14일 소요",
     tradeConditions: "선입금 결제, 대량 구매 시 할인 가능, 샘플 요청 가능",
     images: [
-      "/underwater-seaweed.png",
-      "/underwater-seaweed.png",
-      "/placeholder.svg?key=wlhib",
-      "/placeholder.svg?key=wm7ts",
+      "/product_img/product_1.jpg",
+      "/product_img/product_2.jpg",
+      "/product_img/product_3.jpg",
+      "/product_img/product_4.jpg",
     ],
     isAuction: true,
     auctionEndTime: "2025-06-15 18:00:00",
@@ -146,8 +148,8 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
       originDetail: "고흥",
       grade: "A",
       price: "12,000",
-      unit: "kg",
-      image: "/placeholder.svg?key=pave2",
+      unit: "속",
+      image: "/product_img/product_2.jpg",
       isAuction: false,
     },
     {
@@ -158,8 +160,8 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
       originDetail: "서천",
       grade: "A+",
       price: "14,500",
-      unit: "kg",
-      image: "/placeholder.svg?key=6wt31",
+      unit: "속",
+      image: "/product_img/product_3.jpg",
       isAuction: true,
     },
     {
@@ -170,8 +172,8 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
       originDetail: "신안",
       grade: "B+",
       price: "13,000",
-      unit: "kg",
-      image: "/placeholder.svg?key=dw12a",
+      unit: "속",
+      image: "/product_img/product_4.jpg",
       isAuction: false,
     },
   ]
@@ -211,6 +213,9 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                 </option>
                 <option value="zh" disabled>
                   中文
+                </option>
+                <option value="ja" disabled>
+                  日本語
                 </option>
               </select>
             </div>
@@ -291,7 +296,7 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
               </div>
               <h1 className="mt-2 text-3xl font-bold">{product.name}</h1>
               <div className="mt-2 flex items-center gap-2">
-                <StarRating rating={product.grade} />
+                <StarRating grade={product.grade} />
                 <span className="text-sm text-gray-500">({product.grade})</span>
               </div>
               <div className="mt-1 text-sm text-gray-600">판매자: {product.manufacturer}</div>
@@ -488,7 +493,7 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                 <div className="rounded-md bg-gray-50 p-4">
                   <h3 className="mb-2 font-medium">등급 정보</h3>
                   <div className="mb-2">
-                    <StarRating rating={product.grade} />
+                    <StarRating grade={product.grade} />
                   </div>
                   <p className="text-sm text-gray-600">{product.gradeInfo}</p>
                 </div>
@@ -540,7 +545,7 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                   <div className="rounded-md bg-gray-50 p-4">
                     <h3 className="mb-2 font-medium">품질 등급</h3>
                     <div className="mb-2 flex items-center">
-                      <StarRating rating={product.grade} />
+                      <StarRating grade={product.grade} />
                     </div>
                     <p className="text-sm text-gray-600">{product.gradeInfo}</p>
                   </div>
@@ -600,7 +605,7 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                   <div className="p-4">
                     <h3 className="mb-1 font-semibold">{product.name}</h3>
                     <div className="mb-2 flex items-center">
-                      <StarRating rating={product.grade} />
+                      <StarRating grade={product.grade} />
                     </div>
                     <div className="text-sm text-gray-600">
                       <span>
@@ -621,6 +626,9 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
       {/* 이미지 확대 모달 */}
       <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
         <DialogContent className="max-w-4xl bg-black/90 p-0">
+          <DialogHeader className="sr-only">
+            <DialogTitle>{product.name} 이미지 상세보기</DialogTitle>
+          </DialogHeader>
           <button
             className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
             onClick={() => setImageModalOpen(false)}
@@ -640,10 +648,12 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
 
       {/* 입찰 모달 */}
       <Dialog open={bidModalOpen} onOpenChange={setBidModalOpen}>
-        <DialogContent className="max-w-md">
-          <div className="mb-6">
-            <h2 className="mb-4 text-xl font-bold">입찰 참여</h2>
+        <DialogContent className="max-w-md bg-white dark:bg-white border-gray-200 p-6">
+          <DialogHeader>
+            <DialogTitle className="mb-4 text-xl font-bold text-gray-900">입찰 참여</DialogTitle>
+          </DialogHeader>
 
+          <div className="mb-6">
             {!bidSuccess ? (
               <>
                 <div className="mb-4 rounded-lg border bg-white p-4">
@@ -657,29 +667,29 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                       />
                     </div>
                     <div>
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-gray-500">
+                      <h3 className="font-medium text-gray-900">{product.name}</h3>
+                      <p className="text-sm text-gray-600">
                         {product.type} | {product.originDetail}
                       </p>
                     </div>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">현재 최고가:</span>
+                      <span className="text-gray-700">현재 최고가:</span>
                       <span className="font-medium text-red-600">
                         ₩{product.currentPrice}/{product.unit}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">최소 입찰 단위:</span>
-                      <span className="font-medium">₩500</span>
+                      <span className="text-gray-700">최소 입찰 단위:</span>
+                      <span className="font-medium text-gray-900">₩500</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="mb-6 space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="bidAmount" className="block text-sm font-medium">
+                    <label htmlFor="bidAmount" className="block text-sm font-medium text-gray-800">
                       입찰 금액 (원/{product.unit})
                     </label>
                     <Input
@@ -709,7 +719,7 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                 </div>
 
                 <div className="flex justify-end gap-3">
-                  <Button variant="outline" onClick={() => setBidModalOpen(false)}>
+                  <Button variant="outline" onClick={() => setBidModalOpen(false)} className="bg-white">
                     취소
                   </Button>
                   <Button
@@ -718,6 +728,7 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                       !bidAmount ||
                       Number(bidAmount.replace(/,/g, "")) <= Number(product.currentPrice.replace(/,/g, ""))
                     }
+                    className="bg-[#F95700] hover:bg-[#E04E00] text-white"
                   >
                     입찰하기
                   </Button>
@@ -736,15 +747,15 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="mb-2 text-lg font-medium">입찰이 완료되었습니다</h3>
-                <p className="mb-4 text-sm text-gray-600">입찰 내역은 마이페이지에서 확인하실 수 있습니다.</p>
+                <h3 className="mb-2 text-lg font-medium text-gray-900">입찰이 완료되었습니다</h3>
+                <p className="mb-4 text-sm text-gray-700">입찰 내역은 마이페이지에서 확인하실 수 있습니다.</p>
                 <div className="rounded-md bg-gray-50 p-3 text-left text-sm">
-                  <p className="font-medium">입찰 정보</p>
-                  <p className="mt-1">상품: {product.name}</p>
-                  <p>
+                  <p className="font-medium text-gray-900">입찰 정보</p>
+                  <p className="mt-1 text-gray-800">상품: {product.name}</p>
+                  <p className="text-gray-800">
                     입찰 금액: ₩{bidAmount}/{product.unit}
                   </p>
-                  <p>입찰 시간: {new Date().toLocaleString("ko-KR")}</p>
+                  <p className="text-gray-800">입찰 시간: {new Date().toLocaleString("ko-KR")}</p>
                 </div>
               </div>
             )}
@@ -763,9 +774,10 @@ export default function AuctionProductDetailPage({ params }: { params: { id: str
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
-              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
-              <p className="text-sm">전화: 02-123-4567</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">링크</h3>

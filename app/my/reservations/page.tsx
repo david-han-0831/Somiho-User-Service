@@ -416,6 +416,9 @@ export default function ReservationsPage() {
                 <option value="zh" disabled>
                   中文
                 </option>
+                <option value="ja" disabled>
+                  日本語
+                </option>
               </select>
             </div>
             <Link href="/signup">
@@ -589,93 +592,93 @@ export default function ReservationsPage() {
 
           {/* 상세보기 모달 */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent className="sm:max-w-lg">
+            <DialogContent className="sm:max-w-[600px] md:max-w-[650px] p-6 bg-white dark:bg-white border-gray-200">
               <DialogHeader>
-                <DialogTitle>예약 상세 정보</DialogTitle>
+                <DialogTitle className="text-gray-900 font-bold">예약 상세 정보</DialogTitle>
               </DialogHeader>
 
               {selectedReservation && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">{selectedReservation.productName}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{selectedReservation.productName}</h3>
                     <Badge className={getStatusBadgeVariant(selectedReservation.status)}>
                       {selectedReservation.status}
                     </Badge>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex items-start gap-2">
-                      <Calendar className="h-5 w-5 text-gray-500 mt-0.5" />
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="flex items-start gap-3">
+                      <Calendar className="h-5 w-5 text-gray-700 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-medium text-gray-500">예약일자</p>
-                        <p className="text-sm">{selectedReservation.reservationDate}</p>
+                        <p className="text-sm font-medium text-gray-700">예약일자</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedReservation.reservationDate}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-2">
-                      <Package className="h-5 w-5 text-gray-500 mt-0.5" />
+                    <div className="flex items-start gap-3">
+                      <Package className="h-5 w-5 text-gray-700 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-medium text-gray-500">수량</p>
-                        <p className="text-sm">{selectedReservation.quantity}</p>
+                        <p className="text-sm font-medium text-gray-700">수량</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedReservation.quantity}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-2">
-                      <DollarSign className="h-5 w-5 text-gray-500 mt-0.5" />
+                    <div className="flex items-start gap-3">
+                      <DollarSign className="h-5 w-5 text-gray-700 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-medium text-gray-500">가격</p>
-                        <p className="text-sm">{selectedReservation.price}</p>
+                        <p className="text-sm font-medium text-gray-700">가격</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedReservation.price}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-2">
-                      <Truck className="h-5 w-5 text-gray-500 mt-0.5" />
+                    <div className="flex items-start gap-3">
+                      <Truck className="h-5 w-5 text-gray-700 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-medium text-gray-500">배송예정일</p>
-                        <p className="text-sm">{selectedReservation.deliveryDate}</p>
+                        <p className="text-sm font-medium text-gray-700">배송예정일</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedReservation.deliveryDate}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-2">
-                      <MapPin className="h-5 w-5 text-gray-500 mt-0.5" />
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-5 w-5 text-gray-700 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-medium text-gray-500">생산지</p>
-                        <p className="text-sm">{selectedReservation.location}</p>
+                        <p className="text-sm font-medium text-gray-700">생산지</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedReservation.location}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-2">
-                      <Clock className="h-5 w-5 text-gray-500 mt-0.5" />
+                    <div className="flex items-start gap-3">
+                      <Clock className="h-5 w-5 text-gray-700 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-medium text-gray-500">판매자</p>
-                        <p className="text-sm">{selectedReservation.seller}</p>
+                        <p className="text-sm font-medium text-gray-700">판매자</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedReservation.seller}</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2">
-                    <FileText className="h-5 w-5 text-gray-500 mt-0.5" />
+                  <div className="flex items-start gap-3 pt-2">
+                    <FileText className="h-5 w-5 text-gray-700 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500">상품 상세</p>
-                      <p className="text-sm">{selectedReservation.productDetail}</p>
+                      <p className="text-sm font-medium text-gray-700">상품 상세</p>
+                      <p className="text-sm text-gray-800">{selectedReservation.productDetail}</p>
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <p className="text-sm font-medium text-gray-700">결제 정보</p>
-                    <p className="text-sm text-gray-600">결제 방법: {selectedReservation.paymentMethod}</p>
-                    {selectedReservation.status === "확정완료" && <p className="text-sm text-green-600 mt-1">결제 완료</p>}
+                  <div className="bg-gray-50 p-4 rounded-md mt-4">
+                    <p className="text-sm font-medium text-gray-800">결제 정보</p>
+                    <p className="text-sm text-gray-700 mt-1">결제 방법: {selectedReservation.paymentMethod}</p>
+                    {selectedReservation.status === "확정완료" && <p className="text-sm text-green-600 mt-1 font-medium">결제 완료</p>}
                   </div>
                 </div>
               )}
 
-              <DialogFooter className="sm:justify-end">
+              <DialogFooter className="sm:justify-end mt-6">
                 {selectedReservation?.canCancel && (
-                  <Button variant="outline" className="text-red-600 hover:bg-red-50">
+                  <Button variant="outline" className="text-red-600 hover:bg-red-50 mr-2 bg-white">
                     거래 취소
                   </Button>
                 )}
-                <Button onClick={() => setIsDialogOpen(false)} className="bg-gray-800 hover:bg-gray-700">
+                <Button onClick={() => setIsDialogOpen(false)} className="bg-gray-800 hover:bg-gray-700 text-white">
                   닫기
                 </Button>
               </DialogFooter>
@@ -694,9 +697,10 @@ export default function ReservationsPage() {
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
-              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
-              <p className="text-sm">전화: 02-123-4567</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">링크</h3>

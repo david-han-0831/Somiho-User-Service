@@ -119,6 +119,9 @@ export default function NoticePage() {
                 <option value="zh" disabled>
                   中文
                 </option>
+                <option value="ja" disabled>
+                  日本語
+                </option>
               </select>
             </div>
             <Link href="/signup">
@@ -253,9 +256,10 @@ export default function NoticePage() {
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
-              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
-              <p className="text-sm">전화: 02-123-4567</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">링크</h3>

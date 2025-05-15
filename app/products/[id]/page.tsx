@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { StarRating } from "@/components/star-rating"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 
@@ -46,7 +46,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     weight: "220g",
     grade: "A+",
     price: "15,000",
-    unit: "kg",
+    unit: "속",
     stock: 260,
     code: "20250323-001",
     year: "2025",
@@ -69,10 +69,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     deliveryInfo: "최소 주문 수량 10박스, 국내 배송 3-5일 소요, 해외 배송 7-14일 소요",
     tradeConditions: "선입금 결제, 대량 구매 시 할인 가능, 샘플 요청 가능",
     images: [
-      "/underwater-seaweed.png",
-      "/placeholder.svg?key=mo5wk",
-      "/placeholder.svg?key=zuyua",
-      "/placeholder.svg?key=5m3nz",
+      "/product_img/product_1.jpg",
+      "/product_img/product_2.jpg",
+      "/product_img/product_3.jpg",
+      "/product_img/product_4.jpg",
     ],
     isAuction: false,
   }
@@ -160,8 +160,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       originDetail: "고흥",
       grade: "A",
       price: "12,000",
-      unit: "kg",
-      image: "/placeholder.svg?key=tsmht",
+      unit: "속",
+      image: "/product_img/product_2.jpg",
     },
     {
       id: 3,
@@ -171,8 +171,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       originDetail: "서천",
       grade: "A+",
       price: "14,500",
-      unit: "kg",
-      image: "/placeholder.svg?key=lkbra",
+      unit: "속",
+      image: "/product_img/product_3.jpg",
     },
     {
       id: 4,
@@ -182,8 +182,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       originDetail: "신안",
       grade: "B+",
       price: "13,000",
-      unit: "kg",
-      image: "/placeholder.svg?key=sy6bn",
+      unit: "속",
+      image: "/product_img/product_4.jpg",
     },
   ]
 
@@ -222,6 +222,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </option>
                 <option value="zh" disabled>
                   中文
+                </option>
+                <option value="ja" disabled>
+                  日本語
                 </option>
               </select>
             </div>
@@ -591,6 +594,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       {/* 이미지 확대 모달 */}
       <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
         <DialogContent className="max-w-4xl bg-black/90 p-0">
+          <DialogHeader className="sr-only">
+            <DialogTitle>{product.name} 이미지 상세보기</DialogTitle>
+          </DialogHeader>
           <button
             className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
             onClick={() => setImageModalOpen(false)}
@@ -610,21 +616,21 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
       {/* 거래 요청 확인 모달 */}
       <Dialog open={confirmModalOpen} onOpenChange={handleModalClose}>
-        <DialogContent className="max-w-md">
-          <div className="mb-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold">거래 요청</h2>
-              <div className="flex items-center space-x-1 text-sm text-gray-500">
-                <span className={orderStep >= 1 ? "text-[#F95700] font-medium" : ""}>정보확인</span>
-                <span>→</span>
-                <span className={orderStep >= 2 ? "text-[#F95700] font-medium" : ""}>배송정보</span>
-                <span>→</span>
-                <span className={orderStep >= 3 ? "text-[#F95700] font-medium" : ""}>결제방법</span>
-                <span>→</span>
-                <span className={orderStep >= 4 ? "text-[#F95700] font-medium" : ""}>완료</span>
-              </div>
+        <DialogContent className="max-w-md bg-white dark:bg-white border-gray-200 p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-gray-900">거래 요청</DialogTitle>
+            <div className="flex items-center space-x-1 text-sm text-gray-600">
+              <span className={orderStep >= 1 ? "text-[#F95700] font-medium" : ""}>정보확인</span>
+              <span>→</span>
+              <span className={orderStep >= 2 ? "text-[#F95700] font-medium" : ""}>배송정보</span>
+              <span>→</span>
+              <span className={orderStep >= 3 ? "text-[#F95700] font-medium" : ""}>결제방법</span>
+              <span>→</span>
+              <span className={orderStep >= 4 ? "text-[#F95700] font-medium" : ""}>완료</span>
             </div>
+          </DialogHeader>
 
+          <div className="mb-6">
             {/* 단계 1: 주문 정보 확인 */}
             {orderStep === 1 && (
               <>
@@ -639,27 +645,27 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       />
                     </div>
                     <div>
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-gray-500">
+                      <h3 className="font-medium text-gray-900">{product.name}</h3>
+                      <p className="text-sm text-gray-600">
                         {product.type} | {product.originDetail}
                       </p>
                     </div>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">단가:</span>
-                      <span className="font-medium">
+                      <span className="text-gray-700">단가:</span>
+                      <span className="font-medium text-gray-900">
                         ₩{product.price}/{product.unit}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">수량:</span>
-                      <span className="font-medium">
+                      <span className="text-gray-700">수량:</span>
+                      <span className="font-medium text-gray-900">
                         {quantity} {product.tradeUnit}
                       </span>
                     </div>
                     <div className="flex justify-between border-t border-gray-100 pt-2">
-                      <span className="font-medium">총 금액:</span>
+                      <span className="font-medium text-gray-800">총 금액:</span>
                       <span className="font-bold text-[#F95700]">
                         ₩{(Number.parseInt(product.price.replace(/,/g, "")) * quantity).toLocaleString()}
                       </span>
@@ -667,8 +673,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   </div>
                 </div>
                 <div className="rounded-lg border bg-white p-4">
-                  <h3 className="mb-2 font-medium">거래 조건</h3>
-                  <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
+                  <h3 className="mb-2 font-medium text-gray-900">거래 조건</h3>
+                  <ul className="list-inside list-disc space-y-1 text-sm text-gray-700">
                     <li>
                       최소 주문 수량: {product.minOrderQuantity} {product.tradeUnit}
                     </li>
@@ -683,7 +689,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {orderStep === 2 && (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-800">
                     수령인 이름
                   </label>
                   <Input
@@ -696,7 +702,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="phone" className="block text-sm font-medium">
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-800">
                     연락처
                   </label>
                   <Input
@@ -709,7 +715,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="address" className="block text-sm font-medium">
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-800">
                     배송지 주소
                   </label>
                   <Input
@@ -722,7 +728,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="message" className="block text-sm font-medium">
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-800">
                     배송 메시지
                   </label>
                   <Input
@@ -739,7 +745,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {/* 단계 3: 결제 방법 선택 */}
             {orderStep === 3 && (
               <div className="space-y-4">
-                <h3 className="font-medium">결제 방법 선택</h3>
+                <h3 className="font-medium text-gray-900">결제 방법 선택</h3>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <input
@@ -751,7 +757,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       onChange={() => handlePaymentMethodChange("bank")}
                       className="h-4 w-4 text-[#F95700]"
                     />
-                    <label htmlFor="bank" className="text-sm">
+                    <label htmlFor="bank" className="text-sm text-gray-800">
                       무통장 입금
                     </label>
                   </div>
@@ -765,7 +771,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       onChange={() => handlePaymentMethodChange("card")}
                       className="h-4 w-4 text-[#F95700]"
                     />
-                    <label htmlFor="card" className="text-sm">
+                    <label htmlFor="card" className="text-sm text-gray-800">
                       신용카드
                     </label>
                   </div>
@@ -779,7 +785,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       onChange={() => handlePaymentMethodChange("vbank")}
                       className="h-4 w-4 text-[#F95700]"
                     />
-                    <label htmlFor="vbank" className="text-sm">
+                    <label htmlFor="vbank" className="text-sm text-gray-800">
                       가상계좌
                     </label>
                   </div>
@@ -787,11 +793,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
                 {paymentMethod === "bank" && (
                   <div className="rounded-md bg-gray-50 p-3 text-sm">
-                    <p className="font-medium">무통장 입금 안내</p>
-                    <p className="mt-1">은행명: 농협은행</p>
-                    <p>계좌번호: 123-456-7890</p>
-                    <p>예금주: (주)김 국제거래소</p>
-                    <p className="mt-2 text-xs text-gray-500">* 입금 후 담당자에게 연락 부탁드립니다. (02-123-4567)</p>
+                    <p className="font-medium text-gray-900">무통장 입금 안내</p>
+                    <p className="mt-1 text-gray-800">은행명: 농협은행</p>
+                    <p className="text-gray-800">계좌번호: 123-456-7890</p>
+                    <p className="text-gray-800">예금주: (주)김 국제거래소</p>
+                    <p className="mt-2 text-xs text-gray-600">* 입금 후 담당자에게 연락 부탁드립니다. (02-123-4567)</p>
                   </div>
                 )}
               </div>
@@ -811,16 +817,16 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="mb-2 text-lg font-medium">주문이 완료되었습니다</h3>
-                <p className="mb-4 text-sm text-gray-600">주문 내역은 마이페이지에서 확인하실 수 있습니다.</p>
+                <h3 className="mb-2 text-lg font-medium text-gray-900">주문이 완료되었습니다</h3>
+                <p className="mb-4 text-sm text-gray-700">주문 내역은 마이페이지에서 확인하실 수 있습니다.</p>
                 <div className="rounded-md bg-gray-50 p-3 text-left text-sm">
-                  <p className="font-medium">주문 정보</p>
-                  <p className="mt-1">상품: {product.name}</p>
-                  <p>
+                  <p className="font-medium text-gray-900">주문 정보</p>
+                  <p className="mt-1 text-gray-800">상품: {product.name}</p>
+                  <p className="text-gray-800">
                     수량: {quantity} {product.tradeUnit}
                   </p>
-                  <p>총 금액: ₩{(Number.parseInt(product.price.replace(/,/g, "")) * quantity).toLocaleString()}</p>
-                  <p>
+                  <p className="text-gray-800">총 금액: ₩{(Number.parseInt(product.price.replace(/,/g, "")) * quantity).toLocaleString()}</p>
+                  <p className="text-gray-800">
                     결제 방법:{" "}
                     {paymentMethod === "bank" ? "무통장 입금" : paymentMethod === "card" ? "신용카드" : "가상계좌"}
                   </p>
@@ -831,7 +837,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
           <div className="flex justify-between">
             {orderStep > 1 && orderStep < 4 ? (
-              <Button variant="outline" onClick={prevStep}>
+              <Button variant="outline" onClick={prevStep} className="bg-white">
                 이전
               </Button>
             ) : (
@@ -842,6 +848,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <Button
                 onClick={orderStep === 3 ? confirmPurchase : nextStep}
                 disabled={orderStep === 2 && (!deliveryInfo.name || !deliveryInfo.phone || !deliveryInfo.address)}
+                className="bg-[#F95700] hover:bg-[#E04E00] text-white"
               >
                 {orderStep === 3 ? "주문하기" : "다음"}
               </Button>
@@ -863,9 +870,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
-              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
-              <p className="text-sm">전화: 02-123-4567</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">링크</h3>

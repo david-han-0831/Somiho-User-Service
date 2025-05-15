@@ -51,10 +51,10 @@ export default function HomePage() {
     },
     china: {
       country: "중국",
-      date: "2025.04.22",
-      price: "28,500",
-      change: "-500",
-      isUp: false,
+      date: "2025.01.19",
+      price: "54.21",
+      change: "+0.36",
+      isUp: true,
       trend: [28200, 28000, 28300, 28000, 29000, 29500, 28500],
     },
     japan: {
@@ -78,7 +78,7 @@ export default function HomePage() {
       grade: "A+",
       price: "33,000",
       stock: 260,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_1.jpg",
       type: "재래김",
       isAuction: true,
       auctionEndTime: "2025-06-04 00:00",
@@ -91,7 +91,7 @@ export default function HomePage() {
       grade: "A",
       price: "28,000",
       stock: 180,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_2.jpg",
       type: "재래김",
       isAuction: false,
     },
@@ -104,7 +104,7 @@ export default function HomePage() {
       grade: "A",
       price: "26,000",
       stock: 150,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_3.jpg",
       type: "파래김",
       isAuction: true,
       auctionEndTime: "2025-05-19 00:00",
@@ -117,7 +117,7 @@ export default function HomePage() {
       grade: "B+",
       price: "22,000",
       stock: 200,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_4.jpg",
       type: "파래김",
       isAuction: false,
     },
@@ -130,7 +130,7 @@ export default function HomePage() {
       grade: "A+",
       price: "30,000",
       stock: 120,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_5.jpg",
       type: "김밥김",
       isAuction: false,
     },
@@ -142,7 +142,7 @@ export default function HomePage() {
       grade: "A",
       price: "25,000",
       stock: 180,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_1.jpg",
       type: "김밥김",
       isAuction: true,
       auctionEndTime: "2025-06-10 00:00",
@@ -156,7 +156,7 @@ export default function HomePage() {
       grade: "B+",
       price: "27,000",
       stock: 90,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_2.jpg",
       type: "곱창김",
       isAuction: false,
     },
@@ -168,7 +168,7 @@ export default function HomePage() {
       grade: "A+",
       price: "32,000",
       stock: 70,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_3.jpg",
       type: "곱창김",
       isAuction: true,
       auctionEndTime: "2025-05-25 00:00",
@@ -182,7 +182,7 @@ export default function HomePage() {
       grade: "A",
       price: "29,000",
       stock: 110,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_4.jpg",
       type: "돌김",
       isAuction: false,
     },
@@ -194,7 +194,7 @@ export default function HomePage() {
       grade: "A+",
       price: "34,000",
       stock: 85,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_5.jpg",
       type: "돌김",
       isAuction: true,
       auctionEndTime: "2025-06-15 00:00",
@@ -208,7 +208,7 @@ export default function HomePage() {
       grade: "B+",
       price: "24,000",
       stock: 130,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_1.jpg",
       type: "자반김",
       isAuction: false,
     },
@@ -220,7 +220,7 @@ export default function HomePage() {
       grade: "A",
       price: "28,000",
       stock: 95,
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/product_img/product_2.jpg",
       type: "자반김",
       isAuction: true,
       auctionEndTime: "2025-05-30 00:00",
@@ -301,6 +301,9 @@ export default function HomePage() {
                 </option>
                 <option value="zh" disabled>
                   中文
+                </option>
+                <option value="ja" disabled>
+                  日本語
                 </option>
               </select>
             </div>
@@ -393,7 +396,13 @@ export default function HomePage() {
                   <CardContent className="pt-2">
                     <div className="flex items-end justify-between">
                       <div className="flex flex-col">
-                        <span className="text-2xl font-bold">{price.price}원</span>
+                        <span className="text-2xl font-bold">
+                          {price.country === "중국" 
+                            ? `${price.price}위안` 
+                            : price.country === "일본"
+                              ? `${price.price}엔`
+                              : `${price.price}원`}
+                        </span>
                         <span className={`flex items-center text-sm ${price.isUp ? "text-red-500" : "text-blue-500"}`}>
                           {price.isUp ? "▲" : "▼"} {price.change}
                         </span>
@@ -579,9 +588,10 @@ export default function HomePage() {
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">서울특별시 강남구 테헤란로 123</p>
-              <p className="mb-2 text-sm">이메일: info@seaweed-exchange.com</p>
-              <p className="text-sm">전화: 02-123-4567</p>
+              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+              <p className="text-sm">Tel: +82 70-4833-7310</p>
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold text-white">링크</h3>
