@@ -10,6 +10,7 @@ import { StarRating } from "@/components/star-rating"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Header from "@/components/Header"
 
 export default function ProductsPage() {
   // 상태 관리
@@ -305,51 +306,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold text-[#F95700]">김 국제거래소 B2B</span>
-            </Link>
-          </div>
-
-          <nav className="hidden md:flex md:items-center md:space-x-6">
-            <Link href="/products" className="text-sm font-medium text-[#F95700]">
-              제품 보기
-            </Link>
-            <Link href="/market-price" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              시세 정보
-            </Link>
-            <Link href="/notice" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              공지사항
-            </Link>
-            <Link href="/my/reservations" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              예약 내역
-            </Link>
-          </nav>
-
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <select className="h-9 rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm">
-                <option value="ko">한국어</option>
-                <option value="en" disabled>
-                  English
-                </option>
-                <option value="zh" disabled>
-                  中文
-                </option>
-                <option value="ja" disabled>
-                  日本語
-                </option>
-              </select>
-            </div>
-            <Link href="/signup">
-              <Button size="sm">회원가입</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}

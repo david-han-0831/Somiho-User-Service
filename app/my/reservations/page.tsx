@@ -18,7 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
-import Header from "@/components/header"
+import Header from "@/components/Header"
 import Footer from "@/components/footer"
 import Link from "next/link"
 // 예약 데이터 타입 정의
