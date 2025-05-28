@@ -300,6 +300,86 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </div>
               </div>
 
+              {/* 제공 가능 서류 섹션 추가 */}
+              <div className="mb-6 border-t border-gray-100 pt-6">
+                <h3 className="mb-4 font-medium text-gray-900">제공 가능 서류</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">원산지증명서</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">위생증명서</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">식물검역증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">한국 유기인증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">USDA 인증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">HALAL 인증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">영양성분분석</span>
+                    </div>
+                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">유료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">중금속성적서</span>
+                    </div>
+                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">유료</span>
+                  </div>
+                </div>
+                
+              </div>
+
               <div className="mb-6 border-t border-gray-100 pt-6">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="font-medium">단가</span>
@@ -316,13 +396,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     </div>
                   )}
                 </div>
-                <div className="text-sm text-gray-500">
+                {/* <div className="text-sm text-gray-500">
                   최소 주문 수량: {product.minOrderQuantity} {product.tradeUnit}
-                </div>
+                </div> */}
               </div>
 
               <div className="mb-6 border-t border-gray-100 pt-6">
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <label htmlFor="quantity" className="mb-2 block font-medium">
                     수량 ({product.tradeUnit})
                   </label>
@@ -357,9 +437,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="mb-4 rounded-md bg-gray-50 p-3">
+                {/* <div className="mb-4 rounded-md bg-gray-50 p-3">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">총 금액</span>
                     {isLoggedIn ? (
@@ -370,7 +450,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       <span className="text-gray-500">로그인 후 확인 가능</span>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="flex gap-3">
                   <Button
@@ -395,7 +475,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
         {/* 상세 정보 탭 */}
         <div className="mt-12">
-          <hr className="border-t border-gray-200 mb-8" />
+          
           <LuxStarTable className="w-full" />
           <hr className="border-t border-gray-200 mt-8" />
         </div>

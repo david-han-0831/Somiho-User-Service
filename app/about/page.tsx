@@ -1,7 +1,7 @@
 import { CheckCircle, Shield, Users, Globe, TrendingUp, Star, MapPin } from "lucide-react"
 import LuxStarTable from "@/components/LuxStarTable"  
 import Header from "@/components/Header"
-
+import LuxStarStandard from "@/components/LuxStarStandard"
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -150,7 +150,7 @@ export default function AboutPage() {
           </div>
 
           <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <LuxStarTable />
+            <LuxStarStandard/>
           </div>
         </div>
       </section>
