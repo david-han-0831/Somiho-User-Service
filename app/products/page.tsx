@@ -108,14 +108,12 @@ export default function ProductsPage() {
       name: "완도 특상품 김",
       type: "재래김",
       origin: "한국",
-      originDetail: "완도",
       size: "19×27",
       weight: "220g",
       grade: "A+",
       price: "15,000",
       unit: "속",
       stock: 260,
-      code: "20250323-001",
       year: "2025",
       image: "/product_img/product_1.jpg",
       isAuction: false,
@@ -125,14 +123,12 @@ export default function ProductsPage() {
       name: "고흥 일반 김",
       type: "파래김",
       origin: "한국",
-      originDetail: "고흥",
       size: "19×27",
       weight: "200g",
       grade: "A",
       price: "12,000",
       unit: "속",
       stock: 180,
-      code: "20250323-002",
       year: "2025",
       image: "/product_img/product_2.jpg",
       isAuction: false,
@@ -142,14 +138,12 @@ export default function ProductsPage() {
       name: "서천 특상품 김",
       type: "김밥김",
       origin: "한국",
-      originDetail: "서천",
       size: "19×21",
       weight: "220g",
       grade: "A+",
       price: "14,500",
       unit: "속",
       stock: 150,
-      code: "20250323-003",
       year: "2025",
       image: "/product_img/product_3.jpg",
       isAuction: true,
@@ -160,14 +154,12 @@ export default function ProductsPage() {
       name: "신안 특상품 김",
       type: "곱창김",
       origin: "한국",
-      originDetail: "신안",
       size: "19×27",
       weight: "250g",
       grade: "B+",
       price: "13,000",
       unit: "속",
       stock: 200,
-      code: "20250323-004",
       year: "2025",
       image: "/product_img/product_4.jpg",
       isAuction: false,
@@ -177,14 +169,12 @@ export default function ProductsPage() {
       name: "부산 프리미엄 김",
       type: "돌김",
       origin: "한국",
-      originDetail: "부산",
       size: "21×21",
       weight: "230g",
       grade: "A+",
       price: "16,500",
       unit: "속",
       stock: 120,
-      code: "20250323-005",
       year: "2025",
       image: "/product_img/product_5.jpg",
       isAuction: true,
@@ -195,14 +185,12 @@ export default function ProductsPage() {
       name: "해남 고급 김",
       type: "자반김",
       origin: "한국",
-      originDetail: "해남",
       size: "19×27",
       weight: "280g",
       grade: "A",
       price: "14,000",
       unit: "속",
       stock: 180,
-      code: "20250323-006",
       year: "2025",
       image: "/product_img/product_1.jpg",
       isAuction: false,
@@ -212,14 +200,12 @@ export default function ProductsPage() {
       name: "청도 프리미엄 김",
       type: "재래김",
       origin: "중국",
-      originDetail: "청도",
       size: "19×27",
-      weight: "300g",
+      weight: "6kg",
       grade: "B+",
       price: "11,000",
       unit: "속",
       stock: 90,
-      code: "20250323-007",
       year: "2025",
       image: "/product_img/product_2.jpg",
       isAuction: true,
@@ -228,16 +214,14 @@ export default function ProductsPage() {
     {
       id: 8,
       name: "상해 특선 김",
-      type: "파래김",
+      type: "화입김",
       origin: "중국",
-      originDetail: "상해",
       size: "19×27",
-      weight: "260g",
+      weight: "7kg",
       grade: "A",
       price: "12,500",
       unit: "속",
       stock: 110,
-      code: "20250323-008",
       year: "2025",
       image: "/product_img/product_3.jpg",
       isAuction: false,
@@ -247,14 +231,12 @@ export default function ProductsPage() {
       name: "웨이하이 프리미엄 김",
       type: "김밥김",
       origin: "중국",
-      originDetail: "웨이하이",
       size: "19×21",
-      weight: "270g",
+      weight: "6kg",
       grade: "A+",
       price: "13,500",
       unit: "속",
       stock: 85,
-      code: "20250323-009",
       year: "2025",
       image: "/product_img/product_4.jpg",
       isAuction: true,
@@ -551,15 +533,12 @@ export default function ProductsPage() {
                     <div className="flex flex-wrap gap-x-2">
                       <span>종류: {product.type}</span>
                       <span>•</span>
-                      <span>산지: {product.originDetail}</span>
+                      <span>산지: {product.origin}</span>
                     </div>
                     <div className="flex flex-wrap gap-x-2">
                       <span>규격: {product.size}</span>
                       <span>•</span>
                       <span>중량: {product.weight}</span>
-                    </div>
-                    <div>
-                      <span>코드: {product.code}</span>
                     </div>
                   </div>
                   <div className="mt-4 text-right">
@@ -618,10 +597,9 @@ export default function ProductsPage() {
                   <div className="mb-4 text-sm text-gray-600">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                       <div>종류: {product.type}</div>
-                      <div>산지: {product.originDetail}</div>
+                      <div>산지: {product.origin}</div>
                       <div>규격: {product.size}</div>
                       <div>중량: {product.weight}</div>
-                      <div>코드: {product.code}</div>
                       <div>생산년도: {product.year}</div>
                     </div>
                   </div>
