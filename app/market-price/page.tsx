@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import Header from "@/components/Header"
-import Footer from "@/components/Footer"
+import Footer from "@/components/footer"
 
 export default function MarketPricePage() {
   const [periodTab, setPeriodTab] = useState("weekly")
@@ -30,16 +30,6 @@ export default function MarketPricePage() {
       { date: "2025-01-18", price: "53.85속 (36.50~63.90)", change: "-0.16", isUp: false },
       { date: "2025-01-06", price: "54.01속 (36.30~67.90)", change: "-1.96", isUp: false },
       { date: "2025-01-05", price: "55.97속 (40.10~63.70)", change: "+2.97", isUp: true },
-      
-    ],
-    japan: [
-      { date: "2025.05.06", price: "36,200", change: "+1,200", isUp: true },
-      { date: "2025.05.05", price: "35,000", change: "+800", isUp: true },
-      { date: "2025.05.04", price: "34,200", change: "-300", isUp: false },
-      { date: "2025.05.03", price: "34,500", change: "+500", isUp: true },
-      { date: "2025.05.02", price: "34,000", change: "+200", isUp: true },
-      { date: "2025.05.01", price: "33,800", change: "+300", isUp: true },
-      { date: "2025.04.30", price: "33,500", change: "-200", isUp: false },
     ],
   }
 
@@ -122,45 +112,6 @@ export default function MarketPricePage() {
         { date: "2025.01", price: 54210 },
       ],
     },
-    japan: {
-      weekly: [
-        { date: "04.30", price: 33500 },
-        { date: "05.01", price: 33800 },
-        { date: "05.02", price: 34000 },
-        { date: "05.03", price: 34500 },
-        { date: "05.04", price: 34200 },
-        { date: "05.05", price: 35000 },
-        { date: "05.06", price: 36200 },
-      ],
-      monthly: [
-        { date: "04.06", price: 31700 },
-        { date: "04.10", price: 32000 },
-        { date: "04.15", price: 32700 },
-        { date: "04.20", price: 32500 },
-        { date: "04.25", price: 33000 },
-        { date: "04.30", price: 33500 },
-        { date: "05.01", price: 33800 },
-        { date: "05.02", price: 34000 },
-        { date: "05.03", price: 34500 },
-        { date: "05.04", price: 34200 },
-        { date: "05.05", price: 35000 },
-        { date: "05.06", price: 36200 },
-      ],
-      yearly: [
-        { date: "2024.06", price: 31500 },
-        { date: "2024.07", price: 32000 },
-        { date: "2024.08", price: 31700 },
-        { date: "2024.09", price: 32000 },
-        { date: "2024.10", price: 32700 },
-        { date: "2024.11", price: 32500 },
-        { date: "2024.12", price: 33000 },
-        { date: "2025.01", price: 33800 },
-        { date: "2025.02", price: 33500 },
-        { date: "2025.03", price: 34200 },
-        { date: "2025.04", price: 35000 },
-        { date: "2025.05", price: 36200 },
-      ],
-    },
   }
 
   // 상세 시세 테이블 데이터
@@ -239,14 +190,6 @@ export default function MarketPricePage() {
         }
       }
     ],
-    japan: [
-      { date: "2025.05.06", type: "재래김", spec: "19x21", price: "36,200", origin: "규슈", grade: 5 },
-      { date: "2025.05.06", type: "파래김", spec: "19x21", price: "34,500", origin: "규슈", grade: 4 },
-      { date: "2025.05.06", type: "김밥김", spec: "19x27", price: "38,000", origin: "규슈", grade: 5 },
-      { date: "2025.05.05", type: "재래김", spec: "19x21", price: "35,000", origin: "규슈", grade: 5 },
-      { date: "2025.05.05", type: "파래김", spec: "19x21", price: "33,200", origin: "규슈", grade: 4 },
-      { date: "2025.05.05", type: "김밥김", spec: "19x27", price: "36,800", origin: "규슈", grade: 5 },
-    ],
   }
 
   // 별점 렌더링 함수
@@ -285,27 +228,26 @@ export default function MarketPricePage() {
           className="mb-8"
           onValueChange={(value) => setCountryTab(value)}
         >
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger 
               value="korea" 
               className={countryTab === "korea" ? "!bg-[#F95700] !text-white hover:!text-white" : ""}
               style={countryTab === "korea" ? { backgroundColor: "#F95700", color: "white" } : {}}
             >
-              🇰🇷 한국
+              <div className="flex items-center gap-2">
+                <img src="https://flagcdn.com/kr.svg" alt="한국어" width={24} height={16} className="h-4 w-6 object-cover" />
+                한국
+              </div>
             </TabsTrigger>
             <TabsTrigger 
               value="china" 
               className={countryTab === "china" ? "!bg-[#F95700] !text-white hover:!text-white" : ""}
               style={countryTab === "china" ? { backgroundColor: "#F95700", color: "white" } : {}}
             >
-              🇨🇳 중국
-            </TabsTrigger>
-            <TabsTrigger 
-              value="japan" 
-              className={countryTab === "japan" ? "!bg-[#F95700] !text-white hover:!text-white" : ""}
-              style={countryTab === "japan" ? { backgroundColor: "#F95700", color: "white" } : {}}
-            >
-              🇯🇵 일본
+              <div className="flex items-center gap-2">
+                <img src="https://flagcdn.com/cn.svg" alt="중국어" width={24} height={16} className="h-4 w-6 object-cover" />
+                중국
+              </div>
             </TabsTrigger>
           </TabsList>
 

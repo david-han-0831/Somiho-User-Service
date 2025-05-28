@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import Header from "@/components/Header"
-import Footer from "@/components/Footer"
+import Footer from "@/components/footer"
 import LuxStarTable from "@/components/LuxStarTable"
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {

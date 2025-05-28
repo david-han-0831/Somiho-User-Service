@@ -354,7 +354,9 @@ export default function HomePage() {
             </div>
 
             {/* 시세 정보 카드 4개 (한국 물김, 중국 물김, 한국 마른김, 중국 마른김) */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="relative grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {/* 세로 구분선 */}
+              {/* <div className="absolute right-1/2 top-0 hidden h-full w-[2px] bg-gray-300 lg:block"></div> */}
               {Object.values(marketPrices).map((price) => (
                 <Card key={`${price.country}-${price.type}`} className="bg-white shadow-sm hover:shadow">
                   <CardHeader className="pb-2">
