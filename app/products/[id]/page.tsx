@@ -14,6 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
+import Header from "@/components/Header"
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -50,7 +51,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     stock: 260,
     code: "20250323-001",
     year: "2025",
-    manufacturer: "완도수산",
+    quantity: "72속",
     minOrderQuantity: 10,
     packageUnit: "100장 1속",
     tradeUnit: "박스",
@@ -189,51 +190,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold text-[#F95700]">김 국제거래소 B2B</span>
-            </Link>
-          </div>
-
-          <nav className="hidden md:flex md:items-center md:space-x-6">
-            <Link href="/products" className="text-sm font-medium text-[#F95700]">
-              제품 보기
-            </Link>
-            <Link href="/market-price" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              시세 정보
-            </Link>
-            <Link href="/notice" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              공지사항
-            </Link>
-            <Link href="/my/reservations" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              예약 내역
-            </Link>
-          </nav>
-
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <select className="h-9 rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm">
-                <option value="ko">한국어</option>
-                <option value="en" disabled>
-                  English
-                </option>
-                <option value="zh" disabled>
-                  中文
-                </option>
-                <option value="ja" disabled>
-                  日本語
-                </option>
-              </select>
-            </div>
-            <Link href="/signup">
-              <Button size="sm">회원가입</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
@@ -331,8 +288,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <p className="font-medium">{product.weight}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">제조사</p>
-                  <p className="font-medium">{product.manufacturer}</p>
+                  <p className="text-sm text-gray-500">입수량</p>
+                  <p className="font-medium">{product.quantity}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">생산년도</p>
@@ -419,12 +376,15 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     className="flex-1 bg-[#F95700] hover:bg-[#E04E00]"
                     onClick={handlePurchaseRequest}
                   >
-                    {product.isAuction ? "입찰 참여하기" : "거래 요청하기"}
+                    {product.isAuction ? "입찰 참여하기" : "장바구니 담기"}
                   </Button>
                   <Button variant="outline" size="lg" className="flex-1">
                     샘플 요청
                   </Button>
                 </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  *샘플 배송기간도중 해당 Lot가 다른거래처에 판매 되어질 수 있으며 샘플비용은 반환 되지 않습니다
+                </p>
               </div>
             </div>
           </div>
@@ -618,7 +578,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       <Dialog open={confirmModalOpen} onOpenChange={handleModalClose}>
         <DialogContent className="max-w-md bg-white dark:bg-white border-gray-200 p-6">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-gray-900">거래 요청</DialogTitle>
+            <DialogTitle className="text-xl font-bold text-gray-900">장바구니 담기</DialogTitle>
             <div className="flex items-center space-x-1 text-sm text-gray-600">
               <span className={orderStep >= 1 ? "text-[#F95700] font-medium" : ""}>정보확인</span>
               <span>→</span>

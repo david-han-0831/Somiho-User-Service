@@ -42,29 +42,41 @@ export default function HomePage() {
 
   // Mock data for demonstration
   const marketPrices = {
-    korea: {
+    koreaWet: {
       country: "한국",
+      type: "물김",
       date: "2025.04.22",
       price: "33,000",
       change: "+1,500",
       isUp: true,
       trend: [30000, 30800, 30500, 31000, 32000, 31500, 33000],
     },
-    china: {
+    chinaWet: {
       country: "중국",
+      type: "물김",
       date: "2025.01.19",
       price: "54.21",
       change: "+0.36",
       isUp: true,
       trend: [28200, 28000, 28300, 28000, 29000, 29500, 28500],
     },
-    japan: {
-      country: "일본",
+    koreaDry: {
+      country: "한국",
+      type: "마른김",
       date: "2025.04.22",
       price: "35,000",
       change: "+800",
       isUp: true,
       trend: [33500, 33800, 34000, 34500, 35000, 34200, 35000],
+    },
+    chinaDry: {
+      country: "중국",
+      type: "마른김",
+      date: "2025.01.19",
+      price: "58.32",
+      change: "-0.28",
+      isUp: false,
+      trend: [59000, 58800, 58600, 58500, 58400, 58300, 58320],
     },
   }
 
@@ -330,7 +342,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Market Price Section - Updated with 3 cards (Korea, China, Japan) */}
+        {/* Market Price Section - Updated with 4 cards (Korea Wet, China Wet, Korea Dry, China Dry) */}
         <section className="bg-[#F9FAFB] py-12">
           <div className="container mx-auto px-4">
             <div className="mb-8 flex items-center justify-between">
@@ -340,13 +352,13 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* 시세 정보 카드 3개 (한국, 중국, 일본) */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {/* 시세 정보 카드 4개 (한국 물김, 중국 물김, 한국 마른김, 중국 마른김) */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               {Object.values(marketPrices).map((price) => (
-                <Card key={price.country} className="bg-white shadow-sm hover:shadow">
+                <Card key={`${price.country}-${price.type}`} className="bg-white shadow-sm hover:shadow">
                   <CardHeader className="pb-2">
                     <div className="flex justify-between">
-                      <CardTitle className="text-lg font-bold">{price.country}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{price.country} {price.type}</CardTitle>
                       <span className="text-sm text-gray-500">{price.date}</span>
                     </div>
                   </CardHeader>
@@ -356,9 +368,7 @@ export default function HomePage() {
                         <span className="text-2xl font-bold">
                           {price.country === "중국" 
                             ? `${price.price}위안` 
-                            : price.country === "일본"
-                              ? `${price.price}엔`
-                              : `${price.price}원`}
+                            : `${price.price}원`}
                         </span>
                         <span className={`flex items-center text-sm ${price.isUp ? "text-red-500" : "text-blue-500"}`}>
                           {price.isUp ? "▲" : "▼"} {price.change}
