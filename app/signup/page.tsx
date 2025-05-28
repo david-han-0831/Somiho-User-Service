@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Upload, X, MessageCircle, User, Eye, EyeOff } from "lucide-react"
 import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 export default function SignupPage() {
   const [formData, setFormData] = useState({
     username: "",
@@ -142,7 +143,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-white">
     <Header />
-      <div className="container mx-auto px-4 mt-20">
+      <div className="container mx-auto px-4 mt-20 mb-20">
         
         <div className="max-w-3xl mx-auto">
           {/* 상단 안내 */}
@@ -513,6 +514,8 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }

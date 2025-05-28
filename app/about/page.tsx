@@ -1,6 +1,7 @@
 import { CheckCircle, Shield, Users, Globe, TrendingUp, Star, MapPin } from "lucide-react"
 import LuxStarTable from "@/components/LuxStarTable"  
 import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 import LuxStarStandard from "@/components/LuxStarStandard"
 export default function AboutPage() {
   return (
@@ -354,6 +355,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   )
 }

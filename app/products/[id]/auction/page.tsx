@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { useRouter, useParams } from "next/navigation"
 import React from "react"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 
 export default function AuctionProductDetailPage() {
   const router = useRouter()
@@ -180,51 +182,7 @@ export default function AuctionProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold text-[#F95700]">김 국제거래소 B2B</span>
-            </Link>
-          </div>
-
-          <nav className="hidden md:flex md:items-center md:space-x-6">
-            <Link href="/products" className="text-sm font-medium text-[#F95700]">
-              제품 보기
-            </Link>
-            <Link href="/market-price" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              시세 정보
-            </Link>
-            <Link href="/notice" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              공지사항
-            </Link>
-            <Link href="/my/reservations" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
-              예약 내역
-            </Link>
-          </nav>
-
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <select className="h-9 rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm">
-                <option value="ko">한국어</option>
-                <option value="en" disabled>
-                  English
-                </option>
-                <option value="zh" disabled>
-                  中文
-                </option>
-                <option value="ja" disabled>
-                  日本語
-                </option>
-              </select>
-            </div>
-            <Link href="/signup">
-              <Button size="sm">회원가입</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
@@ -763,50 +721,7 @@ export default function AuctionProductDetailPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 py-12 text-gray-300">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div>
-              <h3 className="mb-4 text-lg font-bold text-white">김 국제거래소 B2B</h3>
-              <p className="mb-4 text-sm">전 세계 바이어를 위한 김 B2B 거래 플랫폼</p>
-              <p className="text-sm">© 2025 김 국제거래소 B2B. All rights reserved.</p>
-            </div>
-            <div>
-              <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
-              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
-              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
-              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
-              <p className="text-sm">Tel: +82 70-4833-7310</p>
-            </div>
-            <div>
-              <h3 className="mb-4 text-lg font-bold text-white">링크</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/terms" className="hover:text-white">
-                    이용약관
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="hover:text-white">
-                    개인정보처리방침
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/faq" className="hover:text-white">
-                    자주 묻는 질문
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-white">
-                    문의하기
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

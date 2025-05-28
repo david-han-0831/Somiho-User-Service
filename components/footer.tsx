@@ -2,50 +2,46 @@ import Link from "next/link"
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-800 text-white">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-gray-800 py-12 text-gray-300">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
-            <h3 className="text-lg font-semibold mb-4">국제거래소 B2B</h3>
-            <p className="text-gray-300 text-sm">비즈니스부터 유통까지, 해산물 거래의 새로운 기준을 제시합니다.</p>
+            <h3 className="mb-4 text-lg font-bold text-white">김 국제거래소 B2B</h3>
+            <p className="mb-4 text-sm">전 세계 바이어를 위한 김 B2B 거래 플랫폼</p>
+            <p className="text-sm">© 2025 김 국제거래소 B2B. All rights reserved.</p>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">빠른 링크</h3>
+            <h3 className="mb-4 text-lg font-bold text-white">연락처</h3>
+            <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
+            <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
+            <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
+            <p className="text-sm">Tel: +82 70-4833-7310</p>
+          </div>
+          <div>
+            <h3 className="mb-4 text-lg font-bold text-white">링크</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/products" className="text-gray-300 hover:text-white">
-                  상품
+                <Link href="/terms" className="hover:text-white">
+                  이용약관
                 </Link>
               </li>
               <li>
-                <Link href="/market-price" className="text-gray-300 hover:text-white">
-                  시세정보
+                <Link href="/privacy" className="hover:text-white">
+                  개인정보처리방침
                 </Link>
               </li>
               <li>
-                <Link href="/notice" className="text-gray-300 hover:text-white">
-                  공지사항
+                <Link href="/faq" className="hover:text-white">
+                  자주 묻는 질문
                 </Link>
               </li>
               <li>
-                <Link href="/my/reservations" className="text-gray-300 hover:text-white">
-                  예약내역
+                <Link href="/contact" className="hover:text-white">
+                  문의하기
                 </Link>
               </li>
             </ul>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">연락처</h3>
-            <address className="text-sm text-gray-300 not-italic">
-              <p className="mb-2 text-sm">경기도 이천시 신둔면 원적로 512번길 202</p>
-              <p className="mb-2 text-sm">202, Wonjeok-ro 512beon-gil, Sindun-myeon, Icheon-si, Gyeonggi-do, Korea, Zip. 17300</p>
-              <p className="mb-2 text-sm">Email: kwon@somiho.kr</p>
-              <p className="text-sm">Tel: +82 70-4833-7310</p>
-            </address>
-          </div>
-        </div>
-        <div className="border-t border-gray-700 mt-8 pt-4 text-sm text-gray-400 text-center">
-          &copy; 2025 국제거래소 B2B. All rights reserved.
         </div>
       </div>
     </footer>

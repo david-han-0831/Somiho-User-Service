@@ -19,7 +19,7 @@ import {
   ChevronRight,
 } from "lucide-react"
 import Header from "@/components/Header"
-import Footer from "@/components/footer"
+// import Footer from "@/components/Footer"
 import Link from "next/link"
 // 예약 데이터 타입 정의
 type ReservationStatus = "진행중" | "확정완료" | "취소됨"
