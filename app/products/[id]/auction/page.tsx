@@ -14,6 +14,7 @@ import { useRouter, useParams } from "next/navigation"
 import React from "react"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
+import LuxStarTable from "@/components/LuxStarTable"
 
 export default function AuctionProductDetailPage() {
   const router = useRouter()
@@ -50,6 +51,7 @@ export default function AuctionProductDetailPage() {
     stock: 260,
     code: "20250323-001",
     year: "2025",
+    quantity: "72속",
     manufacturer: "완도수산",
     minOrderQuantity: 10,
     packageUnit: "100장 1속",
@@ -151,6 +153,7 @@ export default function AuctionProductDetailPage() {
       grade: "A",
       price: "12,000",
       unit: "속",
+      quantity: "50속",
       image: "/product_img/product_2.jpg",
       isAuction: false,
     },
@@ -163,6 +166,7 @@ export default function AuctionProductDetailPage() {
       grade: "A+",
       price: "14,500",
       unit: "속",
+      quantity: "100속",
       image: "/product_img/product_3.jpg",
       isAuction: true,
     },
@@ -175,6 +179,7 @@ export default function AuctionProductDetailPage() {
       grade: "B+",
       price: "13,000",
       unit: "속",
+      quantity: "150속",
       image: "/product_img/product_4.jpg",
       isAuction: false,
     },
@@ -308,9 +313,9 @@ export default function AuctionProductDetailPage() {
                     {product.auctionEndTime.split(" ")[0].replace(/-/g, ".")} {product.auctionEndTime.split(" ")[1]}
                   </div>
                 </div>
-                <div className="text-xs text-gray-500">
+                {/* <div className="text-xs text-gray-500">
                   * 경매 종료 시간 30초 전에 새로운 입찰이 있을 경우, 종료 시간이 3분 연장됩니다.
-                </div>
+                </div> */}
               </div>
               <Button className="w-full bg-red-600 hover:bg-red-700" size="lg" onClick={handleBid}>
                 입찰 참여하기
@@ -326,7 +331,7 @@ export default function AuctionProductDetailPage() {
                 <div>
                   <p className="text-sm text-gray-500">산지</p>
                   <p className="font-medium">
-                    {product.originDetail} ({product.origin})
+                    {product.origin}
                   </p>
                 </div>
                 <div>
@@ -338,8 +343,8 @@ export default function AuctionProductDetailPage() {
                   <p className="font-medium">{product.weight}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">제조사</p>
-                  <p className="font-medium">{product.manufacturer}</p>
+                  <p className="text-sm text-gray-500">입수량</p>
+                  <p className="font-medium">{product.quantity}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">생산년도</p>
@@ -356,13 +361,100 @@ export default function AuctionProductDetailPage() {
                 </div>
                 <div className="text-sm text-gray-500">* 낙찰 시 최소 주문 수량 이상 구매해야 합니다.</div>
               </div>
+
+              {/* 제공 가능 서류 섹션 추가 */}
+              <div className="mb-6 border-t border-gray-100 pt-6">
+                <h3 className="mb-4 font-medium text-gray-900">제공 가능 서류</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">원산지증명서</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">위생증명서</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">식물검역증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">한국 유기인증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">USDA 인증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">HALAL 인증</span>
+                    </div>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">영양성분분석</span>
+                    </div>
+                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">유료</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-gray-700">중금속성적서</span>
+                    </div>
+                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">유료</span>
+                  </div>
+                </div>
+                
+              </div>
             </div>
+            
+                  
+
 
             {/* 찜하기 및 공유하기 버튼 */}
             <div className="flex gap-2">
-              <Button variant="outline" className="flex-1">
-                <Heart className="h-4 w-4 mr-2" />
-                <span>찜하기</span>
+              <Button
+                variant="default"
+                size="lg"
+                className="flex-1 bg-[#F95700] hover:bg-[#E04E00]"
+                
+              >
+                장바구니 담기
               </Button>
               <Button variant="outline" className="flex-1">
                 <Share2 className="h-4 w-4 mr-2" />
@@ -409,131 +501,9 @@ export default function AuctionProductDetailPage() {
 
         {/* 상세 정보 탭 */}
         <div className="mt-12">
-          <Tabs defaultValue="description" className="w-full">
-            <TabsList className="w-full grid grid-cols-4 rounded-none border-b">
-              <TabsTrigger
-                value="description"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#F95700] data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                상품 설명
-              </TabsTrigger>
-              <TabsTrigger
-                value="specifications"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#F95700] data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                제품 사양
-              </TabsTrigger>
-              <TabsTrigger
-                value="quality"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#F95700] data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                품질 정보
-              </TabsTrigger>
-              <TabsTrigger
-                value="delivery"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#F95700] data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                배송/거래 조건
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="description" className="pt-6">
-              <div className="rounded-lg border bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-semibold">상품 설명</h2>
-                <p className="mb-6 text-gray-700">{product.description}</p>
-
-                <h3 className="mb-3 font-medium">특징</h3>
-                <ul className="mb-6 list-inside list-disc space-y-2 text-gray-700">
-                  {product.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
-                  ))}
-                </ul>
-
-                <div className="rounded-md bg-gray-50 p-4">
-                  <h3 className="mb-2 font-medium">등급 정보</h3>
-                  <div className="mb-2">
-                    <StarRating grade={product.grade} />
-                  </div>
-                  <p className="text-sm text-gray-600">{product.gradeInfo}</p>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="specifications" className="pt-6">
-              <div className="rounded-lg border bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-semibold">제품 사양</h2>
-                <div className="overflow-hidden rounded-lg border">
-                  <table className="w-full">
-                    <tbody>
-                      <tr className="border-b">
-                        <th className="bg-gray-50 px-4 py-3 text-left font-medium text-gray-700">규격</th>
-                        <td className="px-4 py-3">{product.size}</td>
-                      </tr>
-                      <tr className="border-b">
-                        <th className="bg-gray-50 px-4 py-3 text-left font-medium text-gray-700">중량</th>
-                        <td className="px-4 py-3">{product.weight}</td>
-                      </tr>
-                      <tr className="border-b">
-                        <th className="bg-gray-50 px-4 py-3 text-left font-medium text-gray-700">포장 단위</th>
-                        <td className="px-4 py-3">{product.packageUnit}</td>
-                      </tr>
-                      <tr className="border-b">
-                        <th className="bg-gray-50 px-4 py-3 text-left font-medium text-gray-700">거래 단위</th>
-                        <td className="px-4 py-3">{product.tradeUnit}</td>
-                      </tr>
-                      <tr className="border-b">
-                        <th className="bg-gray-50 px-4 py-3 text-left font-medium text-gray-700">최소 구매</th>
-                        <td className="px-4 py-3">
-                          {product.minOrderQuantity} {product.tradeUnit} 이상
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className="bg-gray-50 px-4 py-3 text-left font-medium text-gray-700">유통기한</th>
-                        <td className="px-4 py-3">{product.shelfLife}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="quality" className="pt-6">
-              <div className="rounded-lg border bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-semibold">품질 정보</h2>
-                <p className="mb-6 text-gray-700">{product.qualityInfo}</p>
-
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <div className="rounded-md bg-gray-50 p-4">
-                    <h3 className="mb-2 font-medium">품질 등급</h3>
-                    <div className="mb-2 flex items-center">
-                      <StarRating grade={product.grade} />
-                    </div>
-                    <p className="text-sm text-gray-600">{product.gradeInfo}</p>
-                  </div>
-                  <div className="rounded-md bg-gray-50 p-4">
-                    <h3 className="mb-2 font-medium">품질 인증</h3>
-                    <p className="text-sm text-gray-600">HACCP 인증, 식품안전관리인증</p>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="delivery" className="pt-6">
-              <div className="rounded-lg border bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-semibold">배송 안내</h2>
-                <p className="mb-6 text-gray-700">{product.deliveryInfo}</p>
-
-                <h2 className="mb-4 text-xl font-semibold">거래 조건</h2>
-                <p className="mb-6 text-gray-700">{product.tradeConditions}</p>
-
-                <div className="rounded-md bg-gray-50 p-4">
-                  <h3 className="mb-2 font-medium">입찰 주의사항</h3>
-                  <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
-                    <li>입찰 참여 시 취소가 불가능합니다.</li>
-                    <li>낙찰 시 7일 이내에 결제를 완료해야 합니다.</li>
-                    <li>최소 주문 수량 이상 구매해야 합니다.</li>
-                    <li>경매 종료 시간 30초 전에 새로운 입찰이 있을 경우, 종료 시간이 3분 연장됩니다.</li>
-                  </ul>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+          
+          <LuxStarTable className="w-full" />
+          <hr className="border-t border-gray-200 mt-8" />
         </div>
 
         {/* 추천 상품 */}
@@ -567,7 +537,7 @@ export default function AuctionProductDetailPage() {
                     </div>
                     <div className="text-sm text-gray-600">
                       <span>
-                        {product.type} | {product.originDetail}
+                        {product.type} | 입수량: {product.quantity}
                       </span>
                     </div>
                     <div className="mt-2 text-right font-bold text-[#F95700]">
