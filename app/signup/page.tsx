@@ -3,93 +3,128 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Upload, Check, AlertCircle } from "lucide-react"
-
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Upload, X, MessageCircle, User, Eye, EyeOff } from "lucide-react"
+import Header from "@/components/Header"
 export default function SignupPage() {
-  const router = useRouter()
   const [formData, setFormData] = useState({
-    companyName: "",
-    businessNumber: "",
-    country: "KR",
-    phone: "",
-    contactName: "",
+    username: "",
+    password: "",
+    passwordConfirm: "",
     email: "",
+    phone: "",
+    mobile: "",
+    companyName: "",
+    namePosition: "",
+    address: "",
+    mainPort: "",
   })
-  const [businessLicense, setBusinessLicense] = useState<File | null>(null)
-  const [filePreview, setFilePreview] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const [files, setFiles] = useState({
+    businessLicense: null as File | null,
+    companyProfile: null as File | null,
+  })
+
+  const [messengers, setMessengers] = useState({
+    kakao: "",
+    wechat: "",
+    line: "",
+    whatsapp: "",
+    zalo: "",
+  })
+
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+  const [agreed, setAgreed] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [dragActive, setDragActive] = useState("")
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+  const messengerLabels = {
+    kakao: "KAKAOTALK",
+    wechat: "WECHAT",
+    line: "LINE",
+    whatsapp: "WHATSAPP",
+    zalo: "ZALO",
+  }
 
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev }
-        delete newErrors[name]
-        return newErrors
-      })
+  const messengerPlaceholders = {
+    kakao: "@kakao_id 또는 링크",
+    wechat: "wechat_id",
+    line: "line.me 링크 또는 ID",
+    whatsapp: "+821012345678",
+    zalo: "@zalo_id",
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }))
     }
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      setBusinessLicense(file)
+  const handleMessengerChange = (platform: string, value: string) => {
+    setMessengers((prev) => ({ ...prev, [platform]: value }))
+  }
 
-      // Create preview for PDF or images
-      if (file.type === "application/pdf" || file.type.startsWith("image/")) {
-        const reader = new FileReader()
-        reader.onload = () => {
-          setFilePreview(reader.result as string)
-        }
-        reader.readAsDataURL(file)
-      }
+  const handleFileUpload = (type: "businessLicense" | "companyProfile", file: File) => {
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg"]
+    if (!allowedTypes.includes(file.type)) {
+      setErrors((prev) => ({ ...prev, [type]: "PDF, JPG, PNG 파일만 업로드 가능합니다." }))
+      return
+    }
 
-      // Clear error
-      if (errors.businessLicense) {
-        setErrors((prev) => {
-          const newErrors = { ...prev }
-          delete newErrors.businessLicense
-          return newErrors
-        })
-      }
+    setFiles((prev) => ({ ...prev, [type]: file }))
+    setErrors((prev) => ({ ...prev, [type]: "" }))
+  }
+
+  const handleDrag = (e: React.DragEvent, type: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(type)
+    } else if (e.type === "dragleave") {
+      setDragActive("")
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent, type: "businessLicense" | "companyProfile") => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive("")
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(type, e.dataTransfer.files[0])
     }
   }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.companyName.trim()) {
-      newErrors.companyName = "회사명을 입력해주세요."
+    // 필수 필드 검증
+    if (!formData.username.trim()) newErrors.username = "아이디를 입력해주세요."
+    if (!formData.password.trim()) newErrors.password = "비밀번호를 입력해주세요."
+    else if (formData.password.length < 8) newErrors.password = "비밀번호는 최소 8자 이상이어야 합니다."
+
+    if (formData.password !== formData.passwordConfirm) {
+      newErrors.passwordConfirm = "비밀번호가 일치하지 않습니다."
     }
 
-    if (!formData.businessNumber.trim()) {
-      newErrors.businessNumber = "사업자등록번호를 입력해주세요."
-    } else if (!/^\d{10}$/.test(formData.businessNumber.replace(/-/g, ""))) {
-      newErrors.businessNumber = "올바른 사업자등록번호 형식이 아닙니다."
-    }
+    if (!formData.email.trim()) newErrors.email = "이메일을 입력해주세요."
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "올바른 이메일 형식이 아닙니다."
 
-    if (!formData.phone.trim()) {
-      newErrors.phone = "연락처를 입력해주세요."
-    }
+    if (!formData.phone.trim()) newErrors.phone = "연락처를 입력해주세요."
+    if (!formData.mobile.trim()) newErrors.mobile = "핸드폰 번호를 입력해주세요."
+    if (!formData.companyName.trim()) newErrors.companyName = "상호명을 입력해주세요."
+    if (!formData.namePosition.trim()) newErrors.namePosition = "성함/직위를 입력해주세요."
+    if (!formData.address.trim()) newErrors.address = "사업장 주소를 입력해주세요."
 
-    if (!formData.contactName.trim()) {
-      newErrors.contactName = "담당자 이름을 입력해주세요."
-    }
+    if (!files.businessLicense) newErrors.businessLicense = "사업자등록증을 첨부해주세요."
 
-    if (!formData.email.trim()) {
-      newErrors.email = "이메일을 입력해주세요."
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "올바른 이메일 형식이 아닙니다."
-    }
-
-    if (!businessLicense) {
-      newErrors.businessLicense = "사업자등록증을 업로드해주세요."
-    }
+    if (!agreed) newErrors.agreement = "개인정보 수집 및 이용에 동의해주세요."
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -98,254 +133,384 @@ export default function SignupPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!validateForm()) {
-      return
+    if (validateForm()) {
+      // 가입 신청 처리
+      alert("가입 신청이 완료되었습니다. 관리자 검수 후 승인됩니다.")
     }
-
-    setIsSubmitting(true)
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false)
-      router.push("/pending-approval")
-    }, 1500)
   }
 
   return (
-    <div className="py-12 bg-gray-50">
-      <div className="container-custom">
-        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-2xl font-bold mb-6 text-center">바이어 회원가입</h1>
-          <p className="text-gray-600 mb-8 text-center">김 국제거래소 B2B 서비스 이용을 위한 회원가입 양식입니다.</p>
+    <div className="min-h-screen bg-white">
+    <Header />
+      <div className="container mx-auto px-4 mt-20">
+        
+        <div className="max-w-3xl mx-auto">
+          {/* 상단 안내 */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">회원가입</h1>
+            <p className="text-lg text-gray-600 mb-2">김 국제거래소 이용을 위한 사업자 회원 등록을 진행합니다.</p>
+            <p className="text-gray-500">정확한 정보 입력 시, 승인 후 전체 기능 이용이 가능합니다.</p>
+            <div className="w-24 h-1 bg-[#F95700] mx-auto rounded-full mt-6"></div>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left Column - Form Fields */}
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
-                    회사명 <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="companyName"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                      errors.companyName ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors.companyName && (
-                    <p className="mt-1 text-sm text-red-500 flex items-center">
-                      <AlertCircle size={14} className="mr-1" /> {errors.companyName}
-                    </p>
-                  )}
+          {/* 회원가입 폼 */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* 기본 정보 */}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                  <User className="w-6 h-6 text-[#F95700] mr-2" />
+                  기본 정보
+                </h2>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* 아이디 */}
+                  <div>
+                    <Label htmlFor="username" className="text-sm font-medium text-gray-700 mb-2 block">
+                      아이디 <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="username"
+                      type="text"
+                      value={formData.username}
+                      onChange={(e) => handleInputChange("username", e.target.value)}
+                      placeholder="아이디를 입력하세요"
+                      className={errors.username ? "border-red-500" : ""}
+                    />
+                    {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                  </div>
+
+                  {/* 이메일 */}
+                  <div>
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700 mb-2 block">
+                      이메일 <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      placeholder="example@company.com"
+                      className={errors.email ? "border-red-500" : ""}
+                    />
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                  </div>
+
+                  {/* 비밀번호 */}
+                  <div>
+                    <Label htmlFor="password" className="text-sm font-medium text-gray-700 mb-2 block">
+                      비밀번호 <span className="text-red-500">*</span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={formData.password}
+                        onChange={(e) => handleInputChange("password", e.target.value)}
+                        placeholder="최소 8자 이상"
+                        className={errors.password ? "border-red-500 pr-10" : "pr-10"}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                  </div>
+
+                  {/* 비밀번호 확인 */}
+                  <div>
+                    <Label htmlFor="passwordConfirm" className="text-sm font-medium text-gray-700 mb-2 block">
+                      비밀번호 확인 <span className="text-red-500">*</span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="passwordConfirm"
+                        type={showPasswordConfirm ? "text" : "password"}
+                        value={formData.passwordConfirm}
+                        onChange={(e) => handleInputChange("passwordConfirm", e.target.value)}
+                        placeholder="비밀번호를 다시 입력하세요"
+                        className={errors.passwordConfirm ? "border-red-500 pr-10" : "pr-10"}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showPasswordConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    {errors.passwordConfirm && <p className="text-red-500 text-sm mt-1">{errors.passwordConfirm}</p>}
+                  </div>
+
+                  {/* 연락처 */}
+                  <div>
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-700 mb-2 block">
+                      연락처 <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      placeholder="02-1234-5678"
+                      className={errors.phone ? "border-red-500" : ""}
+                    />
+                    {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                  </div>
+
+                  {/* 핸드폰 */}
+                  <div>
+                    <Label htmlFor="mobile" className="text-sm font-medium text-gray-700 mb-2 block">
+                      핸드폰 <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="mobile"
+                      type="tel"
+                      value={formData.mobile}
+                      onChange={(e) => handleInputChange("mobile", e.target.value)}
+                      placeholder="010-1234-5678"
+                      className={errors.mobile ? "border-red-500" : ""}
+                    />
+                    {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
+                  </div>
+
+                  {/* 상호명 */}
+                  <div>
+                    <Label htmlFor="companyName" className="text-sm font-medium text-gray-700 mb-2 block">
+                      상호명 <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="companyName"
+                      type="text"
+                      value={formData.companyName}
+                      onChange={(e) => handleInputChange("companyName", e.target.value)}
+                      placeholder="회사명 또는 브랜드명"
+                      className={errors.companyName ? "border-red-500" : ""}
+                    />
+                    {errors.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>}
+                  </div>
+
+                  {/* 성함/직위 */}
+                  <div>
+                    <Label htmlFor="namePosition" className="text-sm font-medium text-gray-700 mb-2 block">
+                      성함 / 직위 <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="namePosition"
+                      type="text"
+                      value={formData.namePosition}
+                      onChange={(e) => handleInputChange("namePosition", e.target.value)}
+                      placeholder="홍길동 / 해외영업팀장"
+                      className={errors.namePosition ? "border-red-500" : ""}
+                    />
+                    {errors.namePosition && <p className="text-red-500 text-sm mt-1">{errors.namePosition}</p>}
+                  </div>
+
+                  {/* 주사용 항구 */}
+                  <div>
+                    <Label htmlFor="mainPort" className="text-sm font-medium text-gray-700 mb-2 block">
+                      주사용 항구
+                    </Label>
+                    <Input
+                      id="mainPort"
+                      type="text"
+                      value={formData.mainPort}
+                      onChange={(e) => handleInputChange("mainPort", e.target.value)}
+                      placeholder="예: 인천항, 부산항 등"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="businessNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                    사업자등록번호 <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="businessNumber"
-                    name="businessNumber"
-                    value={formData.businessNumber}
-                    onChange={handleInputChange}
-                    placeholder="000-00-00000"
-                    className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                      errors.businessNumber ? "border-red-500" : "border-gray-300"
-                    }`}
+                {/* 사업장 주소 */}
+                <div className="mt-6">
+                  <Label htmlFor="address" className="text-sm font-medium text-gray-700 mb-2 block">
+                    사업장 주소 <span className="text-red-500">*</span>
+                  </Label>
+                  <Textarea
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    placeholder="상세 주소를 입력하세요"
+                    rows={3}
+                    className={errors.address ? "border-red-500" : ""}
                   />
-                  {errors.businessNumber && (
-                    <p className="mt-1 text-sm text-red-500 flex items-center">
-                      <AlertCircle size={14} className="mr-1" /> {errors.businessNumber}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                    국가 <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="country"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="KR">대한민국</option>
-                    <option value="CN">중국</option>
-                    <option value="JP">일본</option>
-                    <option value="US">미국</option>
-                    <option value="OTHER">기타</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    연락처 <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="+82-10-0000-0000"
-                    className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                      errors.phone ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-500 flex items-center">
-                      <AlertCircle size={14} className="mr-1" /> {errors.phone}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="contactName" className="block text-sm font-medium text-gray-700 mb-1">
-                    담당자 이름 <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="contactName"
-                    name="contactName"
-                    value={formData.contactName}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                      errors.contactName ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors.contactName && (
-                    <p className="mt-1 text-sm text-red-500 flex items-center">
-                      <AlertCircle size={14} className="mr-1" /> {errors.contactName}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    담당자 이메일 <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                      errors.email ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-500 flex items-center">
-                      <AlertCircle size={14} className="mr-1" /> {errors.email}
-                    </p>
-                  )}
+                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                 </div>
               </div>
 
-              {/* Right Column - File Upload */}
+              {/* 파일 첨부 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  사업자등록증 업로드 <span className="text-red-500">*</span>
-                </label>
-                <div
-                  className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center h-64 ${
-                    errors.businessLicense ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-primary"
-                  } transition-colors cursor-pointer`}
-                  onClick={() => document.getElementById("businessLicense")?.click()}
-                >
-                  <input
-                    type="file"
-                    id="businessLicense"
-                    name="businessLicense"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                  <Upload className="w-6 h-6 text-[#F95700] mr-2" />
+                  파일 첨부
+                </h2>
 
-                  {filePreview ? (
-                    <>
-                      {businessLicense?.type === "application/pdf" ? (
-                        <div className="flex flex-col items-center">
-                          <div className="w-16 h-20 bg-gray-100 flex items-center justify-center rounded border border-gray-300 mb-2">
-                            <span className="text-xs text-gray-500">PDF</span>
-                          </div>
-                          <p className="text-sm text-gray-600 truncate max-w-full">{businessLicense.name}</p>
-                          <span className="text-xs text-green-600 flex items-center mt-2">
-                            <Check size={14} className="mr-1" /> 업로드 완료
-                          </span>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* 사업자등록증 */}
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                      사업자등록증 <span className="text-red-500">*</span>
+                    </Label>
+                    <div
+                      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                        dragActive === "businessLicense"
+                          ? "border-[#F95700] bg-[#F95700]/5"
+                          : errors.businessLicense
+                            ? "border-red-500 bg-red-50"
+                            : "border-gray-300 hover:border-[#F95700]"
+                      }`}
+                      onDragEnter={(e) => handleDrag(e, "businessLicense")}
+                      onDragLeave={(e) => handleDrag(e, "")}
+                      onDragOver={(e) => handleDrag(e, "businessLicense")}
+                      onDrop={(e) => handleDrop(e, "businessLicense")}
+                    >
+                      {files.businessLicense ? (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-700">{files.businessLicense.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => setFiles((prev) => ({ ...prev, businessLicense: null }))}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={filePreview || "/placeholder.svg"}
-                            alt="사업자등록증 미리보기"
-                            className="max-h-40 max-w-full object-contain mb-2"
+                        <>
+                          <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                          <p className="text-xs text-gray-500">PDF, JPG, PNG 지원</p>
+                          <input
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={(e) =>
+                              e.target.files?.[0] && handleFileUpload("businessLicense", e.target.files[0])
+                            }
+                            className="hidden"
+                            id="businessLicense"
                           />
-                          <span className="text-xs text-green-600 flex items-center mt-2">
-                            <Check size={14} className="mr-1" /> 업로드 완료
-                          </span>
-                        </div>
+                          <label
+                            htmlFor="businessLicense"
+                            className="mt-2 inline-block bg-[#F95700] text-white px-4 py-2 rounded cursor-pointer hover:opacity-90"
+                          >
+                            파일 선택
+                          </label>
+                        </>
                       )}
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-12 w-12 text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600 mb-1">클릭하여 사업자등록증을 업로드하세요</p>
-                      <p className="text-xs text-gray-500">PDF, JPG, PNG 파일 (최대 10MB)</p>
-                    </>
-                  )}
-                </div>
-                {errors.businessLicense && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle size={14} className="mr-1" /> {errors.businessLicense}
-                  </p>
-                )}
-              </div>
-            </div>
+                    </div>
+                    {errors.businessLicense && <p className="text-red-500 text-sm mt-1">{errors.businessLicense}</p>}
+                  </div>
 
-            <div className="border-t border-gray-200 pt-6 mt-6">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full btn-primary py-3 flex items-center justify-center"
-              >
-                {isSubmitting ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
+                  {/* 회사소개서 */}
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">회사소개서 (선택)</Label>
+                    <div
+                      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                        dragActive === "companyProfile"
+                          ? "border-[#F95700] bg-[#F95700]/5"
+                          : "border-gray-300 hover:border-[#F95700]"
+                      }`}
+                      onDragEnter={(e) => handleDrag(e, "companyProfile")}
+                      onDragLeave={(e) => handleDrag(e, "")}
+                      onDragOver={(e) => handleDrag(e, "companyProfile")}
+                      onDrop={(e) => handleDrop(e, "companyProfile")}
                     >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    처리 중...
-                  </>
-                ) : (
-                  "가입 신청하기"
-                )}
-              </button>
-            </div>
-          </form>
+                      {files.companyProfile ? (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-700">{files.companyProfile.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => setFiles((prev) => ({ ...prev, companyProfile: null }))}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                          <p className="text-xs text-gray-500">자유형식</p>
+                          <input
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                            onChange={(e) =>
+                              e.target.files?.[0] && handleFileUpload("companyProfile", e.target.files[0])
+                            }
+                            className="hidden"
+                            id="companyProfile"
+                          />
+                          <label
+                            htmlFor="companyProfile"
+                            className="mt-2 inline-block bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:opacity-90"
+                          >
+                            파일 선택
+                          </label>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 메신저 정보 */}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                  <MessageCircle className="w-6 h-6 text-[#F95700] mr-2" />
+                  메신저 및 커뮤니케이션 수단
+                </h2>
+                <p className="text-sm text-gray-600 mb-4">여러 개 입력 가능 (선택사항)</p>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  {Object.entries(messengerLabels).map(([key, label]) => (
+                    <div key={key}>
+                      <Label className="text-sm font-medium text-gray-700 mb-2 block">{label}</Label>
+                      <div className="relative">
+                        {/* 아이콘 영역 - 추후 실제 아이콘 이미지로 교체 예정 */}
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-200 rounded flex items-center justify-center">
+                          <span className="text-xs text-gray-500 font-bold">{key.charAt(0).toUpperCase()}</span>
+                        </div>
+                        <Input
+                          type="text"
+                          value={messengers[key as keyof typeof messengers]}
+                          onChange={(e) => handleMessengerChange(key, e.target.value)}
+                          placeholder={messengerPlaceholders[key as keyof typeof messengerPlaceholders]}
+                          className="pl-12"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 약관 동의 및 가입 버튼 */}
+              <div className="border-t pt-8">
+                <div className="flex items-center space-x-2 mb-6">
+                  <Checkbox
+                    id="agreement"
+                    checked={agreed}
+                    onCheckedChange={(checked) => setAgreed(checked as boolean)}
+                    className="data-[state=checked]:bg-[#F95700] data-[state=checked]:border-[#F95700]"
+                  />
+                  <Label htmlFor="agreement" className="text-sm text-gray-700">
+                    개인정보 수집 및 이용에 동의합니다 <span className="text-red-500">(필수)</span>
+                  </Label>
+                </div>
+                {errors.agreement && <p className="text-red-500 text-sm mb-4">{errors.agreement}</p>}
+
+                <Button
+                  type="submit"
+                  className="w-full bg-[#F95700] hover:bg-[#F95700]/90 text-white py-3 text-lg font-semibold"
+                >
+                  가입 신청하기
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
