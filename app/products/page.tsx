@@ -32,6 +32,7 @@ export default function ProductsPage() {
     { id: "intestine", name: "곱창김" },
     { id: "stone", name: "돌김" },
     { id: "dried", name: "자반김" },
+    { id: "roasted", name: "화입김" },
   ]
 
   // 산지 옵션
@@ -54,6 +55,8 @@ export default function ProductsPage() {
     { id: "280g", name: "280g" },
     { id: "300g", name: "300g" },
     { id: "320g", name: "320g" },
+    { id: "6kg", name: "6kg" },
+    { id: "7kg", name: "7kg" },
   ]
 
   // 등급 옵션
