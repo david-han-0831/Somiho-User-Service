@@ -350,7 +350,7 @@ export default function SignupPage() {
                   파일 첨부
                 </h2>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-6">
                   {/* 사업자등록증 */}
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">
@@ -409,6 +409,7 @@ export default function SignupPage() {
                   {/* 회사소개서 */}
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">회사소개서 (선택)</Label>
+                    <p className="text-sm text-blue-600 mb-2">회사소개서 첨부시 사업연계 및 각종혜택 제공될 수 있습니다. </p>
                     <div
                       className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
                         dragActive === "companyProfile"

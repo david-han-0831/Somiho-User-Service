@@ -241,20 +241,20 @@ import {
               <div className="space-y-8 mb-12">
                 {/* 특수조건 1 */}
                 <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">특수조건 ① – 예약 구매</h3>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">특수조건 – 예약 구매</h3>
   
                   <div className="mb-6">
                     <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-400 mb-4">
                       <h4 className="font-bold text-blue-700 mb-2">연중상시 출고조건</h4>
                       <p className="text-gray-700">
-                        보증금 20% 출고시 냉동창고 입/출고료 + 보관료 + 이자 - 보증금 부대비용 가감후 거래
+                        보증금 20% 선납 ㅣ 출고시 부대비용 가감 후 거래 
                       </p>
                     </div>
                   </div>
   
                   {/* 박스당 비용 구조 */}
                   <div className="mb-6">
-                    <h4 className="font-bold text-lg mb-3 text-center">박스당 비용 구조</h4>
+                    <h4 className="font-bold text-lg mb-3 text-center">부대비용 명세</h4>
                     <div className="bg-gray-50 rounded-xl overflow-hidden">
                       <table className="w-full">
                         <thead>
@@ -340,7 +340,7 @@ import {
                 </div>
   
                 {/* 특수조건 2 */}
-                <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
+                {/* <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
                   <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">특수조건 ② – 미수 거래</h3>
   
                   <div className="bg-purple-50 rounded-lg p-6 border-l-4 border-purple-400">
@@ -356,7 +356,7 @@ import {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -393,9 +393,9 @@ import {
                     </div>
                     <h4 className="font-bold text-lg mb-2">조건</h4>
                     <p className="text-gray-700">
-                      거래 시 샘플비 차감
+                      거래계약 체결시 발생한 
                       <br />
-                      미거래 시 반환 불가
+                      샘플비용 할인
                     </p>
                   </div>
   
@@ -405,9 +405,9 @@ import {
                     </div>
                     <h4 className="font-bold text-lg mb-2">주의</h4>
                     <p className="text-gray-700">
-                      배송 중 샘플 LOT
+                      샘플배송중 해당자호 
                       <br />
-                      소진 가능성 있음
+                      재고소진 될 수 있음 
                     </p>
                   </div>
                 </div>

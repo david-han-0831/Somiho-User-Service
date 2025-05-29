@@ -347,12 +347,12 @@ export default function MarketPricePage() {
         { date: "2025.05.05", spec: "1kg", price: "2,200", grade: 4 },
       ],
       dryLaver: [
-        { date: "2025.05.06", type: "재래김", unit: "250g/속/100장", price: "34,500", grade: 5 },
-        { date: "2025.05.06", type: "파래김", unit: "250g/속/100장", price: "32,800", grade: 4 },
-        { date: "2025.05.06", type: "김밥김", unit: "250g/속/100장", price: "36,200", grade: 5 },
-        { date: "2025.05.05", type: "재래김", unit: "250g/속/100장", price: "33,000", grade: 5 },
-        { date: "2025.05.05", type: "파래김", unit: "250g/속/100장", price: "31,500", grade: 4 },
-        { date: "2025.05.05", type: "김밥김", unit: "250g/속/100장", price: "34,800", grade: 5 },
+        { date: "2025.05.06", type: "재래김", unit: "250g/속/100장", price: "8,200", grade: 5 },
+        { date: "2025.05.06", type: "파래김", unit: "250g/속/100장", price: "8,300", grade: 4 },
+        { date: "2025.05.06", type: "김밥김", unit: "250g/속/100장", price: "9,800", grade: 5 },
+        { date: "2025.05.05", type: "재래김", unit: "250g/속/100장", price: "7,600", grade: 5 },
+        { date: "2025.05.05", type: "파래김", unit: "250g/속/100장", price: "8,500", grade: 4 },
+        { date: "2025.05.05", type: "김밥김", unit: "250g/속/100장", price: "8,500", grade: 5 },
       ]
     },
     china: {
@@ -715,7 +715,7 @@ export default function MarketPricePage() {
             </Card>
 
             {/* 물김 섹션 */}
-            <div className="space-y-8 mb-16">
+            <div className="space-y-8 mt-16 mb-16">
               <h2 className="text-2xl font-bold">물김 시세</h2>
               {/* 물김 Price Chart */}
               <Card>
