@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { StarRating } from "@/components/star-rating"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import Header from "@/components/Header"
-import Footer from "@/components/footer"
+import Footer from "@/components/Footer"
 
 export default function HomePage() {
   // 배너 슬라이드 상태 관리
