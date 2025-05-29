@@ -428,17 +428,17 @@ export default function MarketPricePage() {
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
                   <th className="px-4 py-3 font-semibold">날짜</th>
-                  <th className="px-4 py-3 font-semibold">시장명</th>
+                  <th className="px-4 py-3 font-semibold">경매장</th>
                   <th className="px-4 py-3 font-semibold">단위</th>
-                  <th className="px-4 py-3 font-semibold">출품</th>
-                  <th className="px-4 py-3 font-semibold">거래</th>
+                  <th className="px-4 py-3 font-semibold">출품정보</th>
+                  <th className="px-4 py-3 font-semibold">낙찰정보</th>
                   <th className="px-4 py-3 font-semibold">
-                    거래금액
+                    총낙찰금액
                     <br />
                     <span className="text-xs">(단위: 만위안)</span>
                   </th>
                   <th className="px-4 py-3 font-semibold">낙찰율</th>
-                  <th className="px-4 py-3 font-semibold">단가</th>
+                  <th className="px-4 py-3 font-semibold">위안/속</th>
                 </tr>
               </thead>
               <tbody>
