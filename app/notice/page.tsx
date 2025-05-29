@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import Header from "../../components/Header"
-import Footer from "../../components/Footer"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 export default function NoticePage() {
   // Mock data for demonstration
   const notices = [

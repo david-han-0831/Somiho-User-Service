@@ -3,8 +3,8 @@
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { useParams } from 'next/navigation'
-import Header from "../../../components/Header"
-import Footer from "../../../components/Footer"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 // Sample notice data (same as in the notice list page)
 const notices = [
   {

@@ -12,8 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { useRouter, useParams } from "next/navigation"
 import React from "react"
-import Header from "../../../../components/Header"
-import Footer from "../../../../components/Footer"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 import LuxStarTable from "@/components/LuxStarTable"
 
 export default function AuctionProductDetailPage() {
