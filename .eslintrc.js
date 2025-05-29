@@ -7,7 +7,7 @@ module.exports = {
       tsconfigRootDir: __dirname,
       sourceType: 'module',
     },
-    plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y'],
+    plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y', 'import'],
     extends: [
       'eslint:recommended',
       'plugin:react/recommended',
@@ -26,6 +26,9 @@ module.exports = {
       'react/react-in-jsx-scope': 'off', // Next.js에서는 필요 없음
       'react/prop-types': 'off', // TypeScript 쓰므로 필요 없음
       'jsx-a11y/anchor-is-valid': 'off', // Next.js의 <Link>를 위한 예외 처리
+      'import/no-unresolved': ['error', { caseSensitive: true }], // ✅ 핵심 룰
+      'import/no-named-as-default-member': 'off',
+      'import/order': ['warn', { 'newlines-between': 'always' }],
     },
     settings: {
       react: {
