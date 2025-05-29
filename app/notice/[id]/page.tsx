@@ -3,7 +3,8 @@
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { useParams } from 'next/navigation'
-
+import Header from "../../../components/Header"
+import Footer from "../../../components/Footer"
 // Sample notice data (same as in the notice list page)
 const notices = [
   {
@@ -80,10 +81,11 @@ export default function NoticeDetailPage() {
   ))
 
   return (
-    <div className="py-12 bg-gray-50">
-      <div className="container-custom">
+    <div className="min-h-screen bg-[#F9FAFB]">
+        <Header />
+      <div className="container-custom px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Breadcrumb */}
-        <div className="mb-6">
+        <div className="mb-6 mt-12">
           <Link href="/notice" className="text-gray-600 hover:text-primary flex items-center">
             <ChevronLeft className="h-4 w-4 mr-1" />
             공지사항 목록으로 돌아가기
@@ -126,7 +128,7 @@ export default function NoticeDetailPage() {
         </div>
 
         {/* Related Notices */}
-        <div className="mt-8">
+        <div className="mt-12 mb-12">
           <h2 className="text-xl font-bold mb-4">다른 공지사항</h2>
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             {notices
@@ -146,7 +148,9 @@ export default function NoticeDetailPage() {
               ))}
           </div>
         </div>
+
       </div>
+        <Footer />
     </div>
   )
 }

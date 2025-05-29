@@ -13,8 +13,8 @@ import { StarRating } from "@/components/star-rating"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
-import Header from "@/components/Header"
-import Footer from "@/components/Footer"
+import Header from "../../../components/Header"
+import Footer from "../../../components/Footer"
 import LuxStarTable from "@/components/LuxStarTable"
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {

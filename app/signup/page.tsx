@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Upload, X, MessageCircle, User, Eye, EyeOff } from "lucide-react"
-import Header from "@/components/Header"
-import Footer from "@/components/Footer"
+import Header from "../../components/Header"
+import Footer from "../../components/Footer"
 export default function SignupPage() {
   const [formData, setFormData] = useState({
     username: "",

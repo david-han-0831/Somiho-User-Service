@@ -14,8 +14,8 @@ import {
     CreditCard,
     Globe,
   } from "lucide-react"
-  import Header from "@/components/Header"
-  import Footer from "@/components/Footer"
+  import Header from "../../components/Header"
+  import Footer from "../../components/Footer"
   export default function GuidePage() {
     return (
       <div className="min-h-screen bg-white">
