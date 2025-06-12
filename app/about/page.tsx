@@ -159,80 +159,11 @@ export default function AboutPage() {
       {/* 회원 등급별 혜택 */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
-              회원 등급별 <span className="text-[#F95700]">혜택</span>
-            </h2>
-            <div className="w-24 h-1 bg-[#F95700] mx-auto rounded-full"></div>
-          </div>
-
-          {/* 회원 등급별 혜택 테이블 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gradient-to-r from-[#F95700] to-orange-600 text-white">
-                    <th className="p-6 text-center font-semibold border-r border-white/20">비회원/회원 구분</th>
-                    <th className="p-6 text-center font-semibold">등급별 혜택</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="hover:bg-gray-50">
-                    <td className="p-6 border-r border-gray-200">
-                      <div className="space-y-4">
-                        <div className="p-4 bg-gray-50 rounded-lg border-l-4 border-gray-400">
-                          <div className="font-semibold mb-2 text-lg text-gray-700">비회원</div>
-                          <div className="text-gray-600">기본시세열람, 최신 업로드4개 마른김 열람</div>
-                        </div>
-                        <div className="p-4 bg-[#F95700]/10 rounded-lg border-l-4 border-[#F95700]">
-                          <div className="font-semibold mb-2 text-lg text-[#F95700]">회원</div>
-                          <div className="text-gray-700">
-                            한국물김시세 열람, 마른김시세열람, 마른김구매 등 모든 기능 사용
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-6">
-                      <div className="space-y-3 text-sm">
-                        <div className="p-3 bg-gray-50 rounded border-l-4 border-gray-400">
-                          <div className="font-semibold mb-1">클래식</div>
-                          <div>12월~6월 매월 한국마른김시황 자료 송부</div>
-                        </div>
-
-                        <div className="p-3 bg-blue-50 rounded border-l-4 border-blue-400">
-                          <div className="font-semibold text-blue-700 mb-1">베스트</div>
-                          <div>클래식 + 수수료할인 0.1%p + 무료샘플월/3회</div>
-                        </div>
-
-                        <div className="p-3 bg-green-50 rounded border-l-4 border-green-400">
-                          <div className="font-semibold text-green-700 mb-1">에이스</div>
-                          <div>클래식 + 수수료할인 0.3%p + 무료샘플월/5회</div>
-                        </div>
-
-                        <div className="p-3 bg-purple-50 rounded border-l-4 border-purple-400">
-                          <div className="font-semibold text-purple-700 mb-1">프리미어</div>
-                          <div>베스트 + 수수료할인 0.6%p + 예탁금 면제 + 샘플 무제한무료</div>
-                          <div className="mt-1 text-xs bg-purple-100 p-2 rounded">
-                            * 주주총회 참관자격 초청장발송 초청비자 발급 + 왕복항공권 지원 + 5성급 호텔지원 + 한국방문
-                            의전
-                          </div>
-                        </div>
-
-                        <div className="p-3 bg-[#F95700]/10 rounded border-l-4 border-[#F95700]">
-                          <div className="font-semibold text-[#F95700] mb-1">VIP</div>
-                          <div>해당기업 기업대표자 특별초청 비즈니스 상담</div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          
 
           {/* 등급별 혜택 요약 카드 */}
-          <div className="mt-12">
-            <h3 className="text-2xl font-bold text-center mb-6">
+          <div className="mb-16">
+            <h3 className="text-4xl font-bold text-center mb-12">
               거래누계 금액별 <span className="text-[#F95700]">회원등급</span>
             </h3>
             <div className="grid lg:grid-cols-5 gap-4">
@@ -305,6 +236,77 @@ export default function AboutPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12 mb-12">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              회원 등급별 <span className="text-[#F95700]">혜택</span>
+            </h2>
+            <div className="w-24 h-1 bg-[#F95700] mx-auto rounded-full"></div>
+          </div>
+
+          {/* 회원 등급별 혜택 테이블 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-[#F95700] to-orange-600 text-white">
+                    <th className="p-6 text-center font-semibold border-r border-white/20">비회원/회원 구분</th>
+                    <th className="p-6 text-center font-semibold">등급별 혜택</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="hover:bg-gray-50">
+                    <td className="p-6 border-r border-gray-200">
+                      <div className="space-y-4">
+                        <div className="p-4 bg-gray-50 rounded-lg border-l-4 border-gray-400">
+                          <div className="font-semibold mb-2 text-lg text-gray-700">비회원</div>
+                          <div className="text-gray-600">기본시세열람, 최신 업로드4개 마른김 열람</div>
+                        </div>
+                        <div className="p-4 bg-[#F95700]/10 rounded-lg border-l-4 border-[#F95700]">
+                          <div className="font-semibold mb-2 text-lg text-[#F95700]">회원</div>
+                          <div className="text-gray-700">
+                            한국물김시세 열람, 마른김시세열람, 마른김구매 등 모든 기능 사용
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-6">
+                      <div className="space-y-3 text-sm">
+                        <div className="p-3 bg-gray-50 rounded border-l-4 border-gray-400">
+                          <div className="font-semibold mb-1">클래식</div>
+                          <div>12월~6월 매월 한국마른김시황 자료 송부</div>
+                        </div>
+
+                        <div className="p-3 bg-blue-50 rounded border-l-4 border-blue-400">
+                          <div className="font-semibold text-blue-700 mb-1">베스트</div>
+                          <div>클래식 + 수수료할인 0.1%p + 무료샘플월/3회</div>
+                        </div>
+
+                        <div className="p-3 bg-green-50 rounded border-l-4 border-green-400">
+                          <div className="font-semibold text-green-700 mb-1">에이스</div>
+                          <div>클래식 + 수수료할인 0.3%p + 무료샘플월/5회</div>
+                        </div>
+
+                        <div className="p-3 bg-purple-50 rounded border-l-4 border-purple-400">
+                          <div className="font-semibold text-purple-700 mb-1">프리미어</div>
+                          <div>베스트 + 수수료할인 0.6%p + 예탁금 면제 + 샘플 무제한무료</div>
+                          <div className="mt-1 text-xs bg-purple-100 p-2 rounded">
+                            * 주주총회 참관자격 초청장발송 초청비자 발급 + 왕복항공권 지원 + 5성급 호텔지원 + 한국방문
+                            의전
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-[#F95700]/10 rounded border-l-4 border-[#F95700]">
+                          <div className="font-semibold text-[#F95700] mb-1">VIP</div>
+                          <div>해당기업 기업대표자 특별초청 비즈니스 상담</div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
