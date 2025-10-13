@@ -25,10 +25,7 @@ import {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-5xl md:text-6xl font-bold mb-6">거래가 처음이신가요?</h1>
-              <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto leading-relaxed text-gray-200">
-                김국제거래소의 이용 절차와 수수료, 거래 조건에 대해 자세히 안내해드립니다.
-              </p>
-              <div className="w-24 h-1 bg-[#F95700] mx-auto rounded-full"></div>
+              <div className="w-24 h-1 bg-[#F95700] mx-auto rounded-full mt-8"></div>
             </div>
           </div>
         </section>
@@ -40,9 +37,6 @@ import {
               <h2 className="text-4xl font-bold text-gray-800 mb-4">
                 전체 <span className="text-[#F95700]">프로세스</span>
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                김국제거래소에서 거래가 이루어지는 전체 과정을 안내해드립니다.
-              </p>
               <div className="w-24 h-1 bg-[#F95700] mx-auto rounded-full mt-4"></div>
             </div>
   
@@ -153,8 +147,8 @@ import {
           </div>
         </section>
   
-        {/* 수수료 안내 */}
-        <section className="py-20 bg-gray-50">
+        {/* 수수료 안내 - 비노출 처리 (2025.10.13 수정사항) */}
+        {/* <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-gray-800 mb-4">
@@ -198,7 +192,7 @@ import {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
   
         {/* 거래 조건 */}
         <section className="py-20 bg-white">
@@ -229,17 +223,19 @@ import {
                     <div className="bg-[#F95700]/10 rounded-full p-3 mr-4">
                       <CreditCard className="w-6 h-6 text-[#F95700]" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <h4 className="font-bold text-lg mb-2">결제조건</h4>
-                      <p className="text-gray-700">선금 거래</p>
+                      <div className="space-y-2 text-gray-700 text-sm">
+                        <p className="whitespace-nowrap"><span className="font-semibold">T/T:</span> 선금 50%, 잔금 50% 완납 후 선하증권 발행</p>
+                        <p className="whitespace-nowrap"><span className="font-semibold">L/C:</span> 조건부 가능 (매입자 수수료 부담 조건)</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
   
-              {/* 특수 조건 */}
-              <div className="space-y-8 mb-12">
-                {/* 특수조건 1 */}
+              {/* 특수 조건 - 비노출 처리 (2025.10.13 수정사항) */}
+              {/* <div className="space-y-8 mb-12">
                 <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
                   <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">특수조건 – 예약 구매</h3>
   
@@ -252,7 +248,6 @@ import {
                     </div>
                   </div>
   
-                  {/* 박스당 비용 구조 */}
                   <div className="mb-6">
                     <h4 className="font-bold text-lg mb-3 text-center">부대비용 명세</h4>
                     <div className="bg-gray-50 rounded-xl overflow-hidden">
@@ -277,7 +272,6 @@ import {
                     </div>
                   </div>
   
-                  {/* 거래 예시 */}
                   <div className="mb-6">
                     <h4 className="font-bold text-lg mb-3 text-center">예시: 박스당 72만원 60일 후 550박스 거래</h4>
                     <div className="bg-gray-50 rounded-xl overflow-hidden">
@@ -304,7 +298,6 @@ import {
                     </div>
                   </div>
   
-                  {/* 계산 방법 설명 */}
                   <div className="mb-6 bg-blue-50 rounded-lg p-4">
                     <h5 className="font-bold text-blue-700 mb-2">계산 방법</h5>
                     <div className="text-sm text-gray-700 space-y-1">
@@ -317,7 +310,6 @@ import {
                     </div>
                   </div>
   
-                  {/* 주의사항 */}
                   <div className="space-y-3">
                     <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400 flex">
                       <AlertTriangle className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" />
@@ -338,26 +330,7 @@ import {
                     </div>
                   </div>
                 </div>
-  
-                {/* 특수조건 2 */}
-                {/* <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">특수조건 ② – 미수 거래</h3>
-  
-                  <div className="bg-purple-50 rounded-lg p-6 border-l-4 border-purple-400">
-                    <h4 className="font-bold text-purple-700 mb-4">미수거래 희망시</h4>
-                    <div className="space-y-3 text-gray-700">
-                      <p>• 보증금 30% 선납</p>
-                      <p>• 해외기업신용등급 D등급 이상</p>
-                      <p>• 보험부보금액 한도내 미수 거래 진행</p>
-                      <div className="mt-4 p-3 bg-purple-100 rounded border-l-2 border-purple-500">
-                        <p className="text-sm font-medium text-purple-800">
-                          [한도기간: 보험가입일로부터 1년, 보험비용: 실비청구]
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-              </div>
+              </div> */}
             </div>
           </div>
         </section>

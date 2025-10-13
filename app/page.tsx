@@ -343,8 +343,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Market Price Section - Updated with 4 cards (Korea Wet, China Wet, Korea Dry, China Dry) */}
-        <section className="bg-[#F9FAFB] py-12">
+        {/* Market Price Section - 비노출 처리 (2025.10.13 수정사항) */}
+        {/* <section className="bg-[#F9FAFB] py-12">
           <div className="container mx-auto px-4">
             <div className="mb-8 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900">김 시세 요약</h2>
@@ -353,9 +353,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* 시세 정보 카드 4개 (한국 물김, 중국 물김, 한국 마른김, 중국 마른김) */}
             <div className="relative grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {/* 세로 구분선 */}
               <div className="absolute left-1/2 top-0 hidden h-full w-[1px] -translate-x-1/2 bg-[#F95700] lg:block"></div>
               {Object.values(marketPrices).map((price) => (
                 <Card key={`${price.country}-${price.type}`} className="bg-white shadow-sm hover:shadow">
@@ -387,7 +385,7 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* 상품 탭별 구분 섹션 - 신규 추가 */}
         <section className="py-12">

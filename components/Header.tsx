@@ -12,8 +12,8 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/logo/존스김밥로고2.png" alt="김 국제거래소 B2B 로고" className="h-10 w-auto" />
-            <span className="text-xl font-bold text-[#F95700]">김 국제거래소 B2B</span>
+            <img src="/logo/존스김밥로고2.png" alt="온라인 마른김 거래소 로고" className="h-10 w-auto" />
+            <span className="text-xl font-bold text-[#F95700]">온라인 마른김 거래소</span>
           </Link>
         </div>
 

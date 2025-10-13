@@ -8,8 +8,8 @@ export default function AboutPage() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* 김 국제거래소 개요 (맨 위로 이동) */}
-      <section className="py-20 bg-white">
+      {/* 김 국제거래소 개요 - 비노출 처리 (2025.10.13 수정사항) */}
+      {/* <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-800">
@@ -22,7 +22,6 @@ export default function AboutPage() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* 왼쪽 텍스트 */}
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-gray-800 mb-8">
                 김 국제거래소 <span className="text-[#F95700]">개요</span>
@@ -52,7 +51,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* 오른쪽 이미지/통계 */}
             <div className="space-y-6">
               <div className="bg-gradient-to-br from-[#F95700]/10 to-orange-100 rounded-2xl p-8">
                 <div className="text-center mb-6">
@@ -76,10 +74,10 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      {/* 임직원 사진 섹션 (개요 바로 아래로 이동) */}
-      <section className="py-16 bg-gray-50">
+      {/* 임직원 사진 섹션 - 비노출 처리 (2025.10.13 수정사항) */}
+      {/* <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 text-center">
           <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
             <div className="h-64 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl flex items-center justify-center mb-4">
@@ -91,7 +89,7 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* 고객사와의 약속 */}
       <section className="py-20 bg-white">
@@ -340,16 +338,48 @@ export default function AboutPage() {
               <h3 className="text-2xl font-bold text-gray-800 mb-6">주소 및 연락처</h3>
 
               <div className="p-6 bg-[#F95700]/5 rounded-lg border-l-4 border-[#F95700]">
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <div className="font-semibold text-[#F95700] mb-2 text-lg">주소</div>
-                    <div className="text-gray-700">경기도 이천시</div>
-                    <div className="text-sm text-gray-500 mt-1">(상세 주소는 투자처에 따라 변경 예정)</div>
+                    <div className="font-semibold text-[#F95700] mb-3 text-lg">사무소 주소</div>
+                    <div className="space-y-2 text-gray-700">
+                      <div>
+                        <span className="font-medium text-gray-800">평택항사무소:</span> 평택시 포승읍 여술1길 100, 1311호
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-800">성남사무소:</span> 성남시 수정구 산성대로 331, 703호
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-800">이천사무소:</span> 이천시 신둔면 원적로 512번길 202
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-800">냉동창고:</span> 중부대로763번길 141-27, 3F
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <div className="font-semibold text-[#F95700] mb-2 text-lg">연락처</div>
-                    <div className="text-gray-700">투자처 확정 후 안내</div>
+                  <div className="pt-4 border-t border-[#F95700]/20">
+                    <div className="font-semibold text-[#F95700] mb-3 text-lg">연락처</div>
+                    <div className="space-y-2 text-gray-700">
+                      
+                      <div>
+                        <span className="font-medium text-gray-800">이메일 (회계):</span>{" "}
+                        <a href="mailto:johns635@johns635.com" className="text-[#F95700] hover:underline">
+                          johns635@johns635.com
+                        </a>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-800">이메일 (사업):</span>{" "}
+                        <a href="mailto:kwon@johns635.com" className="text-[#F95700] hover:underline">
+                          kwon@johns635.com
+                        </a>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-800">전화:</span> +82-10-7330-7314
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-800">팩스:</span> 0504-265-7310
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
