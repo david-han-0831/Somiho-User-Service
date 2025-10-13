@@ -27,9 +27,10 @@ export default function Header() {
           <Link href="/products" className="text-sm font-medium hover:text-[#F95700]">
             제품 보기
           </Link>
-          <Link href="/market-price" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
+          {/* 시세 정보 - 비노출 처리 (2025.10.13 수정사항) */}
+          {/* <Link href="/market-price" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
             시세 정보
-          </Link>
+          </Link> */}
           <Link href="/notice" className="text-sm font-medium text-gray-700 hover:text-[#F95700]">
             공지사항
           </Link>
