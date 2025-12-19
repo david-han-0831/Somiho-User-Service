@@ -58,23 +58,28 @@ export default function LoginPage() {
         throw new Error("비활성화된 계정입니다.")
       }
 
+      // 로그인 성공 - 로딩 상태 먼저 해제
+      setIsLoading(false)
+
+      // 로그인 성공 메시지 표시
       toast({
         title: "로그인 성공",
         description: `${adminUser.name}님 환영합니다!`,
       })
 
-      // 대시보드로 이동
-      router.push("/admin")
-      router.refresh()
+      // 쿠키 동기화를 위한 지연 후 리다이렉트
+      // window.location.href를 사용하여 강제 페이지 리로드로 쿠키 동기화 보장
+      setTimeout(() => {
+        window.location.href = "/admin"
+      }, 300)
     } catch (error: any) {
       console.error("Login error:", error)
+      setIsLoading(false)
       toast({
         title: "로그인 실패",
         description: error.message || "이메일 또는 비밀번호를 확인해주세요.",
         variant: "destructive",
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
