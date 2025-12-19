@@ -63,6 +63,7 @@ export default function LoginPage() {
         description: `${adminUser.name}님 환영합니다!`,
       })
 
+      // 대시보드로 이동
       router.push("/admin")
       router.refresh()
     } catch (error: any) {
