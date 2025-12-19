@@ -11,7 +11,7 @@ export function Sidebar() {
     { name: "대시보드", href: "/admin", icon: BarChart3 },
     { name: "회원 관리", href: "/admin/members", icon: Users },
     { name: "제품 관리", href: "/admin/products", icon: Package },
-    { name: "시세 관리", href: "/admin/market-price", icon: TrendingUp },
+    // { name: "시세 관리", href: "/admin/market-price", icon: TrendingUp }, // 시세 테이블 생성 후 활성화
     { name: "예약 관리", href: "/admin/reservations", icon: Calendar },
     { name: "공지사항/뉴스", href: "/admin/notices", icon: FileText },
   ]

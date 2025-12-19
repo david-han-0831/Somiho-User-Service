@@ -1,34 +1,23 @@
 import { Star } from "lucide-react"
 
 interface StarRatingProps {
-  grade: string
+  grade: number // 1~5 별점
   size?: number
   showText?: boolean
 }
 
 export function StarRating({ grade, size = 16, showText = false }: StarRatingProps) {
-  // 등급을 별 개수로 변환
-  const getStarCount = (grade: string): number => {
-    switch (grade) {
-      case "A+":
-        return 5
-      case "A":
-        return 4
-      case "B+":
-        return 3
-      case "B":
-        return 2
-      case "C":
-        return 1
-      default:
-        return 0
-    }
-  }
+  // 1~5 범위 확인
+  const starCount = Math.max(1, Math.min(5, grade))
 
-  const starCount = getStarCount(grade)
+  // 등급 텍스트 변환 (옵션)
+  const gradeText = starCount === 5 ? "최고급" : 
+                    starCount === 4 ? "고급" : 
+                    starCount === 3 ? "중급" : 
+                    starCount === 2 ? "보통" : "일반"
 
   return (
-    <span className="inline-flex items-center" title={`등급: ${grade}`}>
+    <span className="inline-flex items-center" title={`등급: ${starCount}점 (${gradeText})`}>
       {[...Array(5)].map((_, i) => (
         <Star
           key={i}
@@ -36,7 +25,7 @@ export function StarRating({ grade, size = 16, showText = false }: StarRatingPro
           className={`${i < starCount ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
         />
       ))}
-      {showText && <span className="ml-1 text-xs text-gray-500">({grade})</span>}
+      {showText && <span className="ml-1 text-xs text-gray-500">({starCount}점)</span>}
     </span>
   )
 }

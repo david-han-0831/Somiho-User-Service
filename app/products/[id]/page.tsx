@@ -3,7 +3,7 @@
 // import type React from "react"
 import * as React from "react"
 import { use } from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft, ChevronRight, Minus, Plus, X } from "lucide-react"
@@ -16,12 +16,20 @@ import { useRouter } from "next/navigation"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import LuxStarTable from "@/components/LuxStarTable"
+import { productsApi } from "@/lib/api"
+import { getProductImages } from "@/lib/utils/storage"
+import type { Database } from "@/types/supabase"
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+type Product = Database["public"]["Tables"]["products"]["Row"]
+
+export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-
-  const unwrappedParams = React.use(params as any) as { id: string }
-  const productId = Number.parseInt(unwrappedParams.id)
+  const unwrappedParams = use(params)
+  const productId = unwrappedParams.id
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [productImages, setProductImages] = useState<string[]>([])
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]) // 유사한 상품 목록
   // 상태 관리 부분에 단계 관리를 위한 상태 추가
   const [quantity, setQuantity] = useState(10) // 최소 주문 수량
   const [selectedImage, setSelectedImage] = useState(0)
@@ -37,47 +45,94 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     message: "",
   })
 
-  // Mock data - 실제로는 API에서 가져와야 함
-  const product = {
-    id: productId,
-    name: "완도 특상품 김",
-    type: "재래김",
-    origin: "한국",
-    originDetail: "완도",
-    size: "19×27",
-    weight: "220g",
-    grade: "A+",
-    price: "15,000",
-    unit: "속",
-    stock: 260,
-    code: "20250323-001",
-    year: "2025",
-    quantity: "72속",
-    minOrderQuantity: 10,
-    packageUnit: "100장 1속",
-    tradeUnit: "박스",
-    shelfLife: "제조일로부터 12개월",
-    description:
-      "완도 청정해역에서 생산된 최고급 재래김입니다. 두께가 균일하고 색상이 진하며, 향이 풍부합니다. 구멍이 적고 이물질이 없어 고급 요리와 선물용으로 적합합니다.",
-    features: [
-      "청정해역 완도산",
-      "균일한 두께와 진한 색상",
-      "풍부한 향과 맛",
-      "이물질 없는 깨끗한 품질",
-      "선물용 및 고급 요리용으로 적합",
-    ],
-    qualityInfo: "구멍 발생률 1% 미만, 이물질 없음, 색상 균일도 95% 이상",
-    gradeInfo: "A+ 등급은 최상위 5% 품질에 해당하는 프리미엄 제품입니다.",
-    deliveryInfo: "최소 주문 수량 10박스, 국내 배송 3-5일 소요, 해외 배송 7-14일 소요",
-    tradeConditions: "선입금 결제, 대량 구매 시 할인 가능, 샘플 요청 가능",
-    images: [
-      "/product_img/product_1.jpg",
-      "/product_img/product_2.jpg",
-      "/product_img/product_3.jpg",
-      "/product_img/product_4.jpg",
-    ],
-    isAuction: false,
+  // 상품 데이터 조회
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await productsApi.getProduct(productId)
+        if (response.success && response.data) {
+          setProduct(response.data)
+          
+          // 일반 이미지 목록 가져오기
+          const imagesResult = await getProductImages(productId)
+          if (imagesResult.success && imagesResult.urls) {
+            setProductImages(imagesResult.urls)
+          }
+
+          // 유사한 상품 목록 가져오기 (같은 종류 또는 같은 원산지, 현재 상품 제외)
+          const similarResponse = await productsApi.getProducts({
+            is_active: true,
+            sort_by: "created_at",
+            sort_order: "desc",
+            per_page: 5, // 최대 5개 가져오기
+          })
+
+          if (similarResponse.success && similarResponse.data) {
+            // 현재 상품과 같은 종류(type)이거나 같은 원산지(origin)인 상품 필터링
+            const filtered = similarResponse.data
+              .filter((p) => {
+                // 현재 상품 제외
+                if (p.id === response.data.id) return false
+                // 같은 종류 또는 같은 원산지
+                return (
+                  (response.data.type && p.type === response.data.type) ||
+                  (response.data.origin && p.origin === response.data.origin)
+                )
+              })
+              .slice(0, 4) // 최대 4개만 표시
+
+            setSimilarProducts(filtered)
+          }
+        } else {
+          router.push("/products")
+        }
+      } catch (error) {
+        console.error("상품 조회 오류:", error)
+        router.push("/products")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (productId) {
+      fetchProduct()
+    }
+  }, [productId, router])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB]">
+        <Header />
+        <div className="flex h-[60vh] items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-gray-500">상품 정보를 불러오는 중...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    )
   }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB]">
+        <Header />
+        <div className="flex h-[60vh] items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-500">상품을 찾을 수 없습니다.</p>
+            <Button onClick={() => router.push("/products")} className="mt-4">
+              상품 목록으로 돌아가기
+            </Button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  // 제공 가능 서류 목록
+  const availableDocuments = (product.available_documents as string[]) || []
 
   // 수량 증가
   const increaseQuantity = () => {
@@ -86,7 +141,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   // 수량 감소
   const decreaseQuantity = () => {
-    if (quantity > product.minOrderQuantity) {
+    if (quantity > 1) {
       setQuantity((prev) => prev - 1)
     }
   }
@@ -152,45 +207,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     }
   }
 
-  // 유사 상품 목록 (실제로는 API에서 가져와야 함)
-  const similarProducts = [
-    {
-      id: 2,
-      name: "완도 특상품 김",
-      type: "파래김",
-      origin: "한국",
-      originDetail: "완도",
-      grade: "A",
-      price: "12,000",
-      unit: "속",
-      quantity: "50속",
-      image: "/product_img/product_2.jpg",
-    },
-    {
-      id: 3,
-      name: "완도 특상품 김",
-      type: "김밥김",
-      origin: "한국",
-      originDetail: "완도",
-      grade: "A+",
-      price: "14,500",
-      unit: "속",
-      quantity: "100속",
-      image: "/product_img/product_3.jpg",
-    },
-    {
-      id: 4,
-      name: "완도 특상품 김",
-      type: "곱창김",
-      origin: "한국",
-      originDetail: "완도",
-      grade: "B+",
-      price: "13,000",
-      unit: "속",
-      quantity: "150속",
-      image: "/product_img/product_4.jpg",
-    },
-  ]
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
@@ -225,36 +241,63 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {/* 제품 이미지 */}
           <div className="space-y-4">
+            {/* 메인 이미지 (썸네일 또는 첫 번째 일반 이미지) */}
             <div
               className="relative aspect-square overflow-hidden rounded-lg border bg-white"
-              onClick={() => setImageModalOpen(true)}
+              onClick={() => {
+                if (product.thumbnail_url || productImages.length > 0) {
+                  setImageModalOpen(true)
+                }
+              }}
             >
               <Image
-                src={product.images[selectedImage] || "/placeholder.svg"}
+                src={product.thumbnail_url || productImages[0] || "/placeholder.svg"}
                 alt={product.name}
                 fill
                 className="object-cover cursor-pointer"
               />
               <Badge className="absolute right-2 top-2 bg-blue-500 hover:bg-blue-600">정가거래</Badge>
             </div>
-            <div className="grid grid-cols-4 gap-2">
-              {product.images.map((image, index) => (
-                <div
-                  key={index}
-                  className={`relative aspect-square overflow-hidden rounded-lg border ${
-                    selectedImage === index ? "border-[#F95700] border-2" : "border-gray-200"
-                  } bg-white cursor-pointer`}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  <Image
-                    src={image || "/placeholder.svg"}
-                    alt={`${product.name} ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            
+            {/* 썸네일 이미지 목록 (썸네일 + 일반 이미지) */}
+            {(product.thumbnail_url || productImages.length > 0) && (
+              <div className="grid grid-cols-4 gap-2">
+                {product.thumbnail_url && (
+                  <div
+                    className={`relative aspect-square overflow-hidden rounded-lg border ${
+                      selectedImage === 0 ? "border-[#F95700] border-2" : "border-gray-200"
+                    } bg-white cursor-pointer`}
+                    onClick={() => setSelectedImage(0)}
+                  >
+                    <Image
+                      src={product.thumbnail_url}
+                      alt={`${product.name} 썸네일`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                {productImages.map((image, index) => {
+                  const imageIndex = (product.thumbnail_url ? 1 : 0) + index
+                  return (
+                    <div
+                      key={index}
+                      className={`relative aspect-square overflow-hidden rounded-lg border ${
+                        selectedImage === imageIndex ? "border-[#F95700] border-2" : "border-gray-200"
+                      } bg-white cursor-pointer`}
+                      onClick={() => setSelectedImage(imageIndex)}
+                    >
+                      <Image
+                        src={image}
+                        alt={`${product.name} ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           {/* 제품 정보 */}
@@ -275,118 +318,58 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <div className="mb-6 grid grid-cols-2 gap-x-4 gap-y-3">
                 <div>
                   <p className="text-sm text-gray-500">종류</p>
-                  <p className="font-medium">{product.type}</p>
+                  <p className="font-medium">{product.type || "-"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">산지</p>
                   <p className="font-medium">
-                    {product.originDetail} ({product.origin})
+                    {product.origin_detail ? `${product.origin_detail} (${product.origin})` : product.origin}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">규격</p>
-                  <p className="font-medium">{product.size}</p>
+                  <p className="font-medium">{product.size || "-"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">중량</p>
-                  <p className="font-medium">{product.weight}</p>
+                  <p className="font-medium">{product.weight || "-"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">입수량</p>
-                  <p className="font-medium">{product.quantity}</p>
+                  <p className="font-medium">{product.quantity ? `${product.quantity}개` : "-"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">생산년도</p>
-                  <p className="font-medium">{product.year}</p>
+                  <p className="font-medium">{product.production_year || "-"}</p>
                 </div>
               </div>
 
-              {/* 제공 가능 서류 섹션 추가 */}
-              <div className="mb-6 border-t border-gray-100 pt-6">
-                <h3 className="mb-4 font-medium text-gray-900">제공 가능 서류</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">원산지증명서</span>
-                    </div>
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">위생증명서</span>
-                    </div>
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">식물검역증</span>
-                    </div>
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">한국 유기인증</span>
-                    </div>
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">USDA 인증</span>
-                    </div>
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">HALAL 인증</span>
-                    </div>
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">영양성분분석</span>
-                    </div>
-                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">유료</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
-                    <div className="flex items-center space-x-2">
-                      <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm text-gray-700">중금속성적서</span>
-                    </div>
-                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">유료</span>
+              {/* 제공 가능 서류 섹션 */}
+              {availableDocuments.length > 0 && (
+                <div className="mb-6 border-t border-gray-100 pt-6">
+                  <h3 className="mb-4 font-medium text-gray-900">제공 가능 서류</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {availableDocuments.map((doc) => (
+                      <div key={doc} className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                        <div className="flex items-center space-x-2">
+                          <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-sm text-gray-700">{doc}</span>
+                        </div>
+                        <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">무료</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                
-              </div>
+              )}
 
               <div className="mb-6 border-t border-gray-100 pt-6">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="font-medium">단가</span>
                   {isLoggedIn ? (
                     <span className="text-2xl font-bold text-[#F95700]">
-                      ₩{product.price}/{product.unit}
+                      ₩{typeof product.price === 'number' ? product.price.toLocaleString('ko-KR') : product.price}원
                     </span>
                   ) : (
                     <div className="rounded-md bg-gray-100 px-3 py-2 text-center text-sm">
@@ -445,7 +428,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <span className="font-medium">총 금액</span>
                     {isLoggedIn ? (
                       <span className="text-xl font-bold text-[#F95700]">
-                        ₩{(Number.parseInt(product.price.replace(/,/g, "")) * quantity).toLocaleString()}
+                        ₩{((typeof product.price === 'number' ? product.price : Number(product.price.toString().replace(/,/g, ""))) * quantity).toLocaleString()}
                       </span>
                     ) : (
                       <span className="text-gray-500">로그인 후 확인 가능</span>
@@ -460,7 +443,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     className="flex-1 bg-[#F95700] hover:bg-[#E04E00]"
                     onClick={handlePurchaseRequest}
                   >
-                    {product.isAuction ? "입찰 참여하기" : "장바구니 담기"}
+                    장바구니 담기
                   </Button>
                   <Button variant="outline" size="lg" className="flex-1">
                     샘플 요청
@@ -482,39 +465,44 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
 
         {/* 추천 상품 */}
-        <div className="mt-12">
-          <h2 className="mb-6 text-2xl font-bold">유사한 상품</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {similarProducts.map((product) => (
-              <Link key={product.id} href={`/products/${product.id}`}>
-                <div className="overflow-hidden rounded-lg border bg-white transition-shadow hover:shadow-md">
-                  <div className="relative aspect-square overflow-hidden">
-                    <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      fill
-                      className="object-cover transition-transform duration-300 hover:scale-105"
-                    />
+        {similarProducts.length > 0 && (
+          <div className="mt-12">
+            <h2 className="mb-6 text-2xl font-bold">유사한 상품</h2>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {similarProducts.map((similarProduct) => (
+                <Link key={similarProduct.id} href={`/products/${similarProduct.id}`}>
+                  <div className="overflow-hidden rounded-lg border bg-white transition-shadow hover:shadow-md">
+                    <div className="relative aspect-square overflow-hidden">
+                      <Image
+                        src={similarProduct.thumbnail_url || "/placeholder.svg"}
+                        alt={similarProduct.name}
+                        fill
+                        className="object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="mb-1 font-semibold">{similarProduct.name}</h3>
+                      <div className="mb-2 flex items-center">
+                        <StarRating grade={similarProduct.grade || 0} size={14} />
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span>
+                          {similarProduct.type || ""}
+                          {similarProduct.quantity && ` | 입수량: ${similarProduct.quantity}개`}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-right">
+                        <span className="text-lg font-bold text-[#F95700]">
+                          ₩{similarProduct.price?.toLocaleString("ko-KR") || "0"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="mb-1 font-semibold">{product.name}</h3>
-                    <div className="mb-2 flex items-center">
-                      <StarRating grade={product.grade} size={14} />
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <span>
-                        {product.type} | 입수량: {product.quantity}
-                      </span>
-                    </div>
-                    <div className="mt-2 text-right font-bold text-[#F95700]">
-                      ₩{product.price}/{product.unit}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </main>
 
       {/* 이미지 확대 모달 */}
@@ -530,12 +518,48 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <X className="h-6 w-6" />
           </button>
           <div className="relative h-[80vh]">
-            <Image
-              src={product.images[selectedImage] || "/placeholder.svg"}
-              alt={product.name}
-              fill
-              className="object-contain"
-            />
+            {(() => {
+              const allImages = product.thumbnail_url 
+                ? [product.thumbnail_url, ...productImages]
+                : productImages
+              const currentImage = allImages[selectedImage] || "/placeholder.svg"
+              return (
+                <Image
+                  src={currentImage}
+                  alt={product.name}
+                  fill
+                  className="object-contain"
+                />
+              )
+            })()}
+          </div>
+          <div className="flex items-center justify-between border-t border-white/20 p-4">
+            {(() => {
+              const allImages = product.thumbnail_url 
+                ? [product.thumbnail_url, ...productImages]
+                : productImages
+              return (
+                <>
+                  <button
+                    className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 disabled:opacity-50"
+                    onClick={() => setSelectedImage(Math.max(0, selectedImage - 1))}
+                    disabled={selectedImage === 0}
+                  >
+                    <ChevronRight className="h-6 w-6 rotate-180" />
+                  </button>
+                  <span className="text-white">
+                    {selectedImage + 1} / {allImages.length}
+                  </span>
+                  <button
+                    className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 disabled:opacity-50"
+                    onClick={() => setSelectedImage(Math.min(allImages.length - 1, selectedImage + 1))}
+                    disabled={selectedImage === allImages.length - 1}
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </button>
+                </>
+              )
+            })()}
           </div>
         </DialogContent>
       </Dialog>
@@ -564,7 +588,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <div className="mb-3 flex items-center gap-3">
                     <div className="relative h-16 w-16 overflow-hidden rounded-md border">
                       <Image
-                        src={product.images[0] || "/placeholder.svg"}
+                        src={product.thumbnail_url || productImages[0] || "/placeholder.svg"}
                         alt={product.name}
                         fill
                         className="object-cover"
@@ -593,7 +617,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <div className="flex justify-between border-t border-gray-100 pt-2">
                       <span className="font-medium text-gray-800">총 금액:</span>
                       <span className="font-bold text-[#F95700]">
-                        ₩{(Number.parseInt(product.price.replace(/,/g, "")) * quantity).toLocaleString()}
+                        ₩{((typeof product.price === 'number' ? product.price : Number(product.price.toString().replace(/,/g, ""))) * quantity).toLocaleString()}
                       </span>
                     </div>
                   </div>

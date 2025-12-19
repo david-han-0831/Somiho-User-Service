@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight, ChevronRight, ChevronLeft } from "lucide-react"
@@ -11,11 +11,20 @@ import { StarRating } from "@/components/star-rating"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
+import { productsApi } from "@/lib/api"
+import type { Database } from "@/types/supabase"
+
+type Product = Database["public"]["Tables"]["products"]["Row"]
 
 export default function HomePage() {
   // 배너 슬라이드 상태 관리
   const [currentSlide, setCurrentSlide] = useState(0)
-  const bannerImages = ["https://kafb2b.or.kr/data/atchFile/2025/03/07/bc9ce29ecec8b321999b4436bac6fd14.jpg", "https://kafb2b.or.kr/data/atchFile/2025/03/24/f75d649400a1373fed29286d0ec5fac3.jpg", "https://kafb2b.or.kr/data/atchFile/2025/03/17/f9400d5cd795b4846dec707782ac9fe0.jpg"]
+  const bannerImages = [
+    "/slide/slide1.png",
+    "/slide/slide2.png",
+    "/slide/slide3.png",
+    "/slide/slide4.png"
+  ]
 
   // 자동 슬라이드 기능
   useEffect(() => {
@@ -81,165 +90,61 @@ export default function HomePage() {
     },
   }
 
-  // 상품 데이터 구조 수정 - 일반 상품과 입찰 상품 통합
-  const products = [
-    // 재래김 상품
-    {
-      id: 1,
-      name: "재래김 프리미엄",
-      weight: "280g",
-      size: "19×27cm",
-      grade: "A+",
-      price: "33,000",
-      stock: 260,
-      image: "/product_img/product_1.jpg",
-      type: "재래김",
-      isAuction: true,
-      auctionEndTime: "2025-06-04 00:00",
-    },
-    {
-      id: 2,
-      name: "재래김 고급",
-      weight: "280g",
-      size: "19×27cm",
-      grade: "A",
-      price: "28,000",
-      stock: 180,
-      image: "/product_img/product_2.jpg",
-      type: "재래김",
-      isAuction: false,
-    },
-    // 파래김 상품
-    {
-      id: 3,
-      name: "파래김 특선",
-      weight: "260g",
-      size: "19×27cm",
-      grade: "A",
-      price: "26,000",
-      stock: 150,
-      image: "/product_img/product_3.jpg",
-      type: "파래김",
-      isAuction: true,
-      auctionEndTime: "2025-05-19 00:00",
-    },
-    {
-      id: 4,
-      name: "파래김 일반",
-      weight: "250g",
-      size: "19×27cm",
-      grade: "B+",
-      price: "22,000",
-      stock: 200,
-      image: "/product_img/product_4.jpg",
-      type: "파래김",
-      isAuction: false,
-    },
-    // 김밥김 상품
-    {
-      id: 5,
-      name: "김밥김 프리미엄",
-      weight: "230g",
-      size: "19×21cm",
-      grade: "A+",
-      price: "30,000",
-      stock: 120,
-      image: "/product_img/product_5.jpg",
-      type: "김밥김",
-      isAuction: false,
-    },
-    {
-      id: 6,
-      name: "김밥김 특선",
-      weight: "220g",
-      size: "19×21cm",
-      grade: "A",
-      price: "25,000",
-      stock: 180,
-      image: "/product_img/product_1.jpg",
-      type: "김밥김",
-      isAuction: true,
-      auctionEndTime: "2025-06-10 00:00",
-    },
-    // 곱창김 상품
-    {
-      id: 7,
-      name: "곱창김 고급",
-      weight: "300g",
-      size: "19×27cm",
-      grade: "B+",
-      price: "27,000",
-      stock: 90,
-      image: "/product_img/product_2.jpg",
-      type: "곱창김",
-      isAuction: false,
-    },
-    {
-      id: 8,
-      name: "곱창김 프리미엄",
-      weight: "270g",
-      size: "19×27cm",
-      grade: "A+",
-      price: "32,000",
-      stock: 70,
-      image: "/product_img/product_3.jpg",
-      type: "곱창김",
-      isAuction: true,
-      auctionEndTime: "2025-05-25 00:00",
-    },
-    // 돌김 상품
-    {
-      id: 9,
-      name: "돌김 특선",
-      weight: "260g",
-      size: "19×27cm",
-      grade: "A",
-      price: "29,000",
-      stock: 110,
-      image: "/product_img/product_4.jpg",
-      type: "돌김",
-      isAuction: false,
-    },
-    {
-      id: 10,
-      name: "돌김 프리미엄",
-      weight: "270g",
-      size: "19×27cm",
-      grade: "A+",
-      price: "34,000",
-      stock: 85,
-      image: "/product_img/product_5.jpg",
-      type: "돌김",
-      isAuction: true,
-      auctionEndTime: "2025-06-15 00:00",
-    },
-    // 자반김 상품
-    {
-      id: 11,
-      name: "자반김 고급",
-      weight: "280g",
-      size: "19×27cm",
-      grade: "B+",
-      price: "24,000",
-      stock: 130,
-      image: "/product_img/product_1.jpg",
-      type: "자반김",
-      isAuction: false,
-    },
-    {
-      id: 12,
-      name: "자반김 특선",
-      weight: "290g",
-      size: "19×27cm",
-      grade: "A",
-      price: "28,000",
-      stock: 95,
-      image: "/product_img/product_2.jpg",
-      type: "자반김",
-      isAuction: true,
-      auctionEndTime: "2025-05-30 00:00",
-    },
-  ]
+  // 상품 데이터 상태
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedTab, setSelectedTab] = useState("all")
+
+  // 상품 목록 조회
+  const fetchProducts = useCallback(async () => {
+    setLoading(true)
+    try {
+      const response = await productsApi.getProducts({
+        is_active: true,
+        sort_by: "created_at",
+        sort_order: "desc",
+        per_page: 20, // 홈페이지에서는 최대 20개만 표시
+      })
+
+      if (response.success && response.data) {
+        setProducts(response.data)
+      } else {
+        console.error("상품 목록 조회 실패:", response.message)
+        setProducts([])
+      }
+    } catch (error) {
+      console.error("상품 목록 조회 오류:", error)
+      setProducts([])
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  // 컴포넌트 마운트 시 상품 목록 조회
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  // 탭별 필터링된 상품 목록
+  const getFilteredProducts = (tabValue: string) => {
+    if (tabValue === "all") {
+      return products.slice(0, 8) // 전체 탭에서는 최대 8개만 표시
+    }
+
+    const typeMap: { [key: string]: string } = {
+      traditional: "재래김",
+      green: "파래김",
+      sushi: "김밥김",
+      intestine: "곱창김",
+      stone: "돌김",
+      dried: "자반김",
+    }
+
+    const filterType = typeMap[tabValue]
+    if (!filterType) return products
+
+    return products.filter((p) => p.type === filterType)
+  }
 
   const news = [
     {
@@ -397,7 +302,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <Tabs defaultValue="all" className="space-y-8">
+            <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-8">
               <TabsList className="w-full flex-wrap justify-start rounded-none border-b bg-transparent p-0">
                 <TabsTrigger
                   value="all"
@@ -444,71 +349,101 @@ export default function HomePage() {
               </TabsList>
 
               <TabsContent value="all" className="mt-4">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {products.slice(0, 8).map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500">로딩 중...</div>
+                ) : getFilteredProducts("all").length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">등록된 상품이 없습니다.</div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {getFilteredProducts("all").map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="traditional" className="mt-4">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {products
-                    .filter((p) => p.type === "재래김")
-                    .map((product) => (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500">로딩 중...</div>
+                ) : getFilteredProducts("traditional").length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">재래김 상품이 없습니다.</div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {getFilteredProducts("traditional").map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
-                </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="green" className="mt-4">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {products
-                    .filter((p) => p.type === "파래김")
-                    .map((product) => (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500">로딩 중...</div>
+                ) : getFilteredProducts("green").length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">파래김 상품이 없습니다.</div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {getFilteredProducts("green").map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
-                </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="sushi" className="mt-4">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {products
-                    .filter((p) => p.type === "김밥김")
-                    .map((product) => (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500">로딩 중...</div>
+                ) : getFilteredProducts("sushi").length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">김밥김 상품이 없습니다.</div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {getFilteredProducts("sushi").map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
-                </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="intestine" className="mt-4">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {products
-                    .filter((p) => p.type === "곱창김")
-                    .map((product) => (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500">로딩 중...</div>
+                ) : getFilteredProducts("intestine").length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">곱창김 상품이 없습니다.</div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {getFilteredProducts("intestine").map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
-                </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="stone" className="mt-4">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {products
-                    .filter((p) => p.type === "돌김")
-                    .map((product) => (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500">로딩 중...</div>
+                ) : getFilteredProducts("stone").length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">돌김 상품이 없습니다.</div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {getFilteredProducts("stone").map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
-                </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="dried" className="mt-4">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {products
-                    .filter((p) => p.type === "자반김")
-                    .map((product) => (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500">로딩 중...</div>
+                ) : getFilteredProducts("dried").length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">자반김 상품이 없습니다.</div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {getFilteredProducts("dried").map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
-                </div>
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </div>
@@ -551,46 +486,43 @@ export default function HomePage() {
 }
 
 // ProductCard 컴포넌트 - 재사용 가능한 상품 카드
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product }: { product: Product }) {
   return (
     <Card className="overflow-hidden bg-white shadow-sm hover:shadow">
       <div className="relative aspect-square overflow-hidden">
         <Image
-          src={product.image || "/placeholder.svg"}
+          src={product.thumbnail_url || "/placeholder.svg"}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-300 hover:scale-105"
         />
-        {product.isAuction && (
-          <div className="absolute top-0 left-0 right-0 bg-red-500 text-white text-xs font-medium py-1 px-2 text-center">
-            예약판매 마감: {product.auctionEndTime}
-          </div>
-        )}
+        <div className="absolute right-2 top-2">
+          <Badge className="bg-blue-500 hover:bg-blue-600">정가거래</Badge>
+        </div>
       </div>
       <CardContent className="p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-lg font-semibold">{product.name}</h3>
-          <StarRating grade={product.grade} size={14} />
+          <StarRating grade={product.grade || 0} size={14} />
         </div>
         <div className="mb-4 flex flex-wrap gap-2 text-sm text-gray-600">
-          <span>중량: {product.weight}</span>
-          <span>•</span>
-          <span>규격: {product.size}</span>
-          <span>•</span>
-          <span>재고: {product.stock}개</span>
+          {product.weight && <span>중량: {product.weight}</span>}
+          {product.weight && product.size && <span>•</span>}
+          {product.size && <span>규격: {product.size}</span>}
+          {product.quantity && (
+            <>
+              {(product.weight || product.size) && <span>•</span>}
+              <span>입수량: {product.quantity}개</span>
+            </>
+          )}
         </div>
         <div className="rounded-md bg-gray-100 p-3 text-center">
           <span className="text-sm text-gray-500">회원가입 시 가격 확인 가능</span>
         </div>
       </CardContent>
       <CardFooter className="border-t p-4">
-        <Link
-          href={product.isAuction ? `/products/${product.id}/auction` : `/products/${product.id}`}
-          className="w-full"
-        >
-          <Button className="w-full bg-[#F95700] hover:bg-[#E04E00]">
-            {product.isAuction ? "입찰 참여" : "거래하기"}
-          </Button>
+        <Link href={`/products/${product.id}`} className="w-full">
+          <Button className="w-full bg-[#F95700] hover:bg-[#E04E00]">거래하기</Button>
         </Link>
       </CardFooter>
     </Card>

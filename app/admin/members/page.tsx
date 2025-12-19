@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Search, Filter } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,88 +17,70 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ConfirmModal } from "@/components/confirm-modal"
+import { membersApi } from "@/lib/api"
+import type { Database } from "@/types/supabase"
+import { toast } from "sonner"
+
+type Member = Database["public"]["Tables"]["members"]["Row"]
 
 export default function MembersPage() {
+  const [members, setMembers] = useState<Member[]>([])
+  const [loading, setLoading] = useState(true)
   const [openMemberDetail, setOpenMemberDetail] = useState(false)
-  const [selectedMember, setSelectedMember] = useState<any>(null)
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const [confirmModal, setConfirmModal] = useState({
     open: false,
     title: "",
     type: "success" as "success" | "warning" | "error" | "info",
-    action: "" as "approve" | "reject",
+    action: "" as "approve" | "reject" | "",
   })
   const [comment, setComment] = useState("")
+  
+  // 필터 상태
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedCountry, setSelectedCountry] = useState("all")
+  const [selectedStatus, setSelectedStatus] = useState("all")
 
-  // Mock data for demonstration
-  const members = [
-    {
-      id: 1,
-      company: "㈜수산김",
-      manager: "김일본",
-      country: "일본",
-      businessNumber: "111-22-33333",
-      registrationDate: "2025-03-24",
-      status: "waiting",
-      businessLicense: "/placeholder.svg?height=300&width=400",
-      email: "kim@example.jp",
-      phone: "+81-3-1234-5678",
-    },
-    {
-      id: 2,
-      company: "해양물산",
-      manager: "이중국",
-      country: "중국",
-      businessNumber: "222-33-44444",
-      registrationDate: "2025-03-23",
-      status: "approved",
-      businessLicense: "/placeholder.svg?height=300&width=400",
-      email: "lee@example.cn",
-      phone: "+86-10-1234-5678",
-    },
-    {
-      id: 3,
-      company: "글로벌푸드",
-      manager: "박미국",
-      country: "미국",
-      businessNumber: "333-44-55555",
-      registrationDate: "2025-03-22",
-      status: "rejected",
-      businessLicense: "/placeholder.svg?height=300&width=400",
-      email: "park@example.com",
-      phone: "+1-123-456-7890",
-    },
-    {
-      id: 4,
-      company: "한국수산",
-      manager: "최한국",
-      country: "한국",
-      businessNumber: "444-55-66666",
-      registrationDate: "2025-03-21",
-      status: "waiting",
-      businessLicense: "/placeholder.svg?height=300&width=400",
-      email: "choi@example.kr",
-      phone: "+82-2-1234-5678",
-    },
-    {
-      id: 5,
-      company: "동남아식품",
-      manager: "정태국",
-      country: "태국",
-      businessNumber: "555-66-77777",
-      registrationDate: "2025-03-20",
-      status: "waiting",
-      businessLicense: "/placeholder.svg?height=300&width=400",
-      email: "jung@example.th",
-      phone: "+66-2-123-4567",
-    },
-  ]
+  // 회원 목록 조회
+  const fetchMembers = useCallback(async () => {
+    setLoading(true)
+    try {
+      const response = await membersApi.getMembers({
+        q: searchQuery || undefined,
+        country: selectedCountry !== "all" ? selectedCountry : undefined,
+        status: selectedStatus as any,
+        sort_by: "created_at",
+        sort_order: "desc",
+      })
 
-  const handleOpenDetail = (member: any) => {
+      if (response.success && response.data) {
+        setMembers(response.data)
+      } else {
+        toast.error(response.message || "회원 목록 조회에 실패했습니다.")
+      }
+    } catch (error) {
+      console.error("회원 조회 오류:", error)
+      toast.error("회원 목록을 불러오는 중 오류가 발생했습니다.")
+    } finally {
+      setLoading(false)
+    }
+  }, [searchQuery, selectedCountry, selectedStatus])
+
+  // 필터 변경 시 데이터 조회 (검색어는 디바운스 적용)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchMembers()
+    }, searchQuery ? 300 : 0) // 검색어가 있을 때만 디바운스
+
+    return () => clearTimeout(timer)
+  }, [fetchMembers])
+
+  const handleOpenDetail = (member: Member) => {
     setSelectedMember(member)
     setOpenMemberDetail(true)
   }
 
-  const handleApprove = (member: any, fromDetail = false) => {
+  const handleApprove = (member: Member, fromDetail = false) => {
     setSelectedMember(member)
     setConfirmModal({
       open: true,
@@ -111,7 +93,7 @@ export default function MembersPage() {
     }
   }
 
-  const handleReject = (member: any, fromDetail = false) => {
+  const handleReject = (member: Member, fromDetail = false) => {
     setSelectedMember(member)
     setConfirmModal({
       open: true,
@@ -124,28 +106,60 @@ export default function MembersPage() {
     }
   }
 
-  const handleConfirmAction = () => {
-    // 실제 API 호출 로직이 여기에 들어갑니다
-    if (confirmModal.action === "approve") {
-      // 승인 처리 로직
-      console.log(`${selectedMember.company} 승인 처리됨`, comment)
-      setConfirmModal({
-        open: true,
-        title: "승인되었습니다",
-        type: "success",
-        action: "",
-      })
-    } else if (confirmModal.action === "reject") {
-      // 반려 처리 로직
-      console.log(`${selectedMember.company} 반려 처리됨`, comment)
-      setConfirmModal({
-        open: true,
-        title: "반려되었습니다",
-        type: "error",
-        action: "",
-      })
+  const handleConfirmAction = async () => {
+    if (!selectedMember) return
+
+    try {
+      if (confirmModal.action === "approve") {
+        // 승인 처리
+        const response = await membersApi.approveMember(selectedMember.id, {
+          memo: comment || undefined,
+        })
+
+        if (response.success) {
+          toast.success("승인되었습니다")
+          setConfirmModal({
+            open: false,
+            title: "",
+            type: "success",
+            action: "",
+          })
+          setComment("")
+          // 목록 새로고침
+          fetchMembers()
+        } else {
+          toast.error(response.message || "승인에 실패했습니다")
+        }
+      } else if (confirmModal.action === "reject") {
+        // 반려 처리
+        if (!comment.trim()) {
+          toast.error("반려 사유를 입력해주세요")
+          return
+        }
+
+        const response = await membersApi.rejectMember(selectedMember.id, {
+          rejection_reason: comment,
+        })
+
+        if (response.success) {
+          toast.success("반려되었습니다")
+          setConfirmModal({
+            open: false,
+            title: "",
+            type: "success",
+            action: "",
+          })
+          setComment("")
+          // 목록 새로고침
+          fetchMembers()
+        } else {
+          toast.error(response.message || "반려에 실패했습니다")
+        }
+      }
+    } catch (error) {
+      console.error("회원 처리 오류:", error)
+      toast.error("처리 중 오류가 발생했습니다")
     }
-    setComment("")
   }
 
   return (
@@ -156,23 +170,28 @@ export default function MembersPage() {
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="회사명 또는 담당자 검색" className="pl-9" />
+          <Input 
+            placeholder="회사명 또는 담당자 검색" 
+            className="pl-9" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
         <div className="flex gap-2">
-          <Select>
+          <Select value={selectedCountry} onValueChange={setSelectedCountry}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="국가" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">전체</SelectItem>
-              <SelectItem value="kr">한국</SelectItem>
-              <SelectItem value="jp">일본</SelectItem>
-              <SelectItem value="cn">중국</SelectItem>
-              <SelectItem value="us">미국</SelectItem>
-              <SelectItem value="th">태국</SelectItem>
+              <SelectItem value="한국">한국</SelectItem>
+              <SelectItem value="일본">일본</SelectItem>
+              <SelectItem value="중국">중국</SelectItem>
+              <SelectItem value="미국">미국</SelectItem>
+              <SelectItem value="태국">태국</SelectItem>
             </SelectContent>
           </Select>
-          <Select>
+          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="상태" />
             </SelectTrigger>
@@ -183,9 +202,6 @@ export default function MembersPage() {
               <SelectItem value="rejected">반려</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="icon">
-            <Filter className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
@@ -195,45 +211,52 @@ export default function MembersPage() {
           <CardTitle>회원 목록</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
-                  <th className="px-4 py-3 font-semibold">회사명</th>
-                  <th className="px-4 py-3 font-semibold">담당자</th>
-                  <th className="px-4 py-3 font-semibold">국가</th>
-                  <th className="px-4 py-3 font-semibold">사업자번호</th>
-                  <th className="px-4 py-3 font-semibold">가입일</th>
-                  <th className="px-4 py-3 font-semibold">상태</th>
-                  {/* 상태에 따른 작업 버튼은 상세 페이지로 이동 */}
-                </tr>
-              </thead>
-              <tbody>
-                {members.map((member) => (
-                  <tr
-                    key={member.id}
-                    className="border-b border-gray-100 text-sm hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handleOpenDetail(member)}
-                  >
-                    <td className="px-4 py-4 font-medium text-gray-900">{member.company}</td>
-                    <td className="px-4 py-4 text-gray-600">{member.manager}</td>
-                    <td className="px-4 py-4">
-                      <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800">
-                        {member.country}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 font-mono text-xs text-gray-600">{member.businessNumber}</td>
-                    <td className="px-4 py-4 text-gray-600">{member.registrationDate}</td>
-                    <td className="px-4 py-4">
-                      {member.status === "waiting" && <Badge variant="waiting">승인대기</Badge>}
-                      {member.status === "approved" && <Badge variant="approved">승인됨</Badge>}
-                      {member.status === "rejected" && <Badge variant="rejected">반려됨</Badge>}
-                    </td>
+          {loading ? (
+            <div className="py-8 text-center text-gray-500">로딩 중...</div>
+          ) : members.length === 0 ? (
+            <div className="py-8 text-center text-gray-500">등록된 회원이 없습니다.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 font-semibold">회사명</th>
+                    <th className="px-4 py-3 font-semibold">담당자</th>
+                    <th className="px-4 py-3 font-semibold">국가</th>
+                    <th className="px-4 py-3 font-semibold">사업자번호</th>
+                    <th className="px-4 py-3 font-semibold">가입일</th>
+                    <th className="px-4 py-3 font-semibold">상태</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {members.map((member) => (
+                    <tr
+                      key={member.id}
+                      className="border-b border-gray-100 text-sm hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleOpenDetail(member)}
+                    >
+                      <td className="px-4 py-4 font-medium text-gray-900">{member.company}</td>
+                      <td className="px-4 py-4 text-gray-600">{member.manager}</td>
+                      <td className="px-4 py-4">
+                        <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800">
+                          {member.country}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 font-mono text-xs text-gray-600">{member.business_number}</td>
+                      <td className="px-4 py-4 text-gray-600">
+                        {member.registration_date ? new Date(member.registration_date).toLocaleDateString('ko-KR') : '-'}
+                      </td>
+                      <td className="px-4 py-4">
+                        {member.status === "waiting" && <Badge variant="waiting">승인대기</Badge>}
+                        {member.status === "approved" && <Badge variant="approved">승인됨</Badge>}
+                        {member.status === "rejected" && <Badge variant="rejected">반려됨</Badge>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -260,7 +283,7 @@ export default function MembersPage() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">사업자번호:</span>
-                <span className="col-span-3">{selectedMember.businessNumber}</span>
+                <span className="col-span-3">{selectedMember.business_number}</span>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">이메일:</span>
@@ -268,22 +291,38 @@ export default function MembersPage() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">연락처:</span>
-                <span className="col-span-3">{selectedMember.phone}</span>
+                <span className="col-span-3">{selectedMember.phone || '-'}</span>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">가입일:</span>
-                <span className="col-span-3">{selectedMember.registrationDate}</span>
+                <span className="col-span-3">
+                  {selectedMember.registration_date ? new Date(selectedMember.registration_date).toLocaleDateString('ko-KR') : '-'}
+                </span>
               </div>
-              <div className="space-y-2">
-                <span className="text-sm font-medium">사업자등록증:</span>
-                <div className="mt-2 rounded border border-gray-200 p-2">
-                  <img
-                    src={selectedMember.businessLicense || "/placeholder.svg"}
-                    alt="사업자등록증"
-                    className="mx-auto h-auto max-w-full"
-                  />
+              {selectedMember.business_license_url && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">사업자등록증:</span>
+                  <div className="mt-2 rounded border border-gray-200 p-2">
+                    <img
+                      src={selectedMember.business_license_url}
+                      alt="사업자등록증"
+                      className="mx-auto h-auto max-w-full"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+              {selectedMember.rejection_reason && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium text-red-600">반려 사유:</span>
+                  <p className="text-sm text-gray-600">{selectedMember.rejection_reason}</p>
+                </div>
+              )}
+              {selectedMember.memo && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">메모:</span>
+                  <p className="text-sm text-gray-600">{selectedMember.memo}</p>
+                </div>
+              )}
               {selectedMember.status === "waiting" && (
                 <div className="space-y-2">
                   <span className="text-sm font-medium">코멘트:</span>

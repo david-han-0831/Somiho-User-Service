@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Search, Filter } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -18,128 +18,68 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { StarRating } from "@/components/star-rating"
 import { ConfirmModal } from "@/components/confirm-modal"
+import { reservationsApi } from "@/lib/api"
+import type { Database } from "@/types/supabase"
+import { toast } from "sonner"
+
+type Reservation = Database["public"]["Views"]["reservations_detailed"]["Row"]
 
 export default function ReservationsPage() {
+  const [reservations, setReservations] = useState<Reservation[]>([])
+  const [loading, setLoading] = useState(true)
   const [openReservationDetail, setOpenReservationDetail] = useState(false)
-  const [selectedReservation, setSelectedReservation] = useState<any>(null)
+  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null)
   const [confirmModal, setConfirmModal] = useState({
     open: false,
     title: "",
     type: "success" as "success" | "warning" | "error" | "info",
-    action: "" as "approve" | "reject",
+    action: "" as "approve" | "reject" | "",
   })
   const [comment, setComment] = useState("")
 
-  // Mock data for demonstration
-  const reservations = [
-    {
-      id: 1,
-      company: "김무역",
-      product: "조미김 세트",
-      reservationDate: "2025-03-25",
-      status: "waiting",
-      companyInfo: {
-        manager: "김일본",
-        email: "kim@example.jp",
-        phone: "+81-3-1234-5678",
-        country: "일본",
-      },
-      productInfo: {
-        name: "조미김 세트",
-        grade: "A+",
-        code: "20250315-001",
-        price: "33,000",
-      },
-      memo: "샘플 요청 포함",
-    },
-    {
-      id: 2,
-      company: "해양물산",
-      product: "파래김 세트",
-      reservationDate: "2025-03-26",
-      status: "approved",
-      companyInfo: {
-        manager: "이중국",
-        email: "lee@example.cn",
-        phone: "+86-10-1234-5678",
-        country: "중국",
-      },
-      productInfo: {
-        name: "파래김 세트",
-        grade: "A",
-        code: "20250316-002",
-        price: "28,000",
-      },
-      memo: "대량 주문 예정",
-    },
-    {
-      id: 3,
-      company: "일본식품",
-      product: "구운김 세트",
-      reservationDate: "2025-03-27",
-      status: "waiting",
-      companyInfo: {
-        manager: "사토",
-        email: "sato@example.jp",
-        phone: "+81-3-2345-6789",
-        country: "일본",
-      },
-      productInfo: {
-        name: "구운김 세트",
-        grade: "B+",
-        code: "20250317-003",
-        price: "25,000",
-      },
-      memo: "품질 확인 요청",
-    },
-    {
-      id: 4,
-      company: "중국무역",
-      product: "도시락김 세트",
-      reservationDate: "2025-03-28",
-      status: "rejected",
-      companyInfo: {
-        manager: "왕",
-        email: "wang@example.cn",
-        phone: "+86-10-2345-6789",
-        country: "중국",
-      },
-      productInfo: {
-        name: "도시락김 세트",
-        grade: "A",
-        code: "20250318-004",
-        price: "22,000",
-      },
-      memo: "가격 협상 요청",
-    },
-    {
-      id: 5,
-      company: "글로벌푸드",
-      product: "김밥용김 세트",
-      reservationDate: "2025-03-29",
-      status: "waiting",
-      companyInfo: {
-        manager: "박미국",
-        email: "park@example.com",
-        phone: "+1-123-456-7890",
-        country: "미국",
-      },
-      productInfo: {
-        name: "김밥용김 세트",
-        grade: "A+",
-        code: "20250319-005",
-        price: "30,000",
-      },
-      memo: "샘플 요청",
-    },
-  ]
+  // 필터 상태
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedStatus, setSelectedStatus] = useState("all")
 
-  const handleOpenDetail = (reservation: any) => {
+  // 예약 목록 조회
+  const fetchReservations = useCallback(async () => {
+    setLoading(true)
+    try {
+      const response = await reservationsApi.getReservations({
+        q: searchQuery || undefined,
+        status: selectedStatus as any,
+        sort_by: "created_at",
+        sort_order: "desc",
+      })
+
+      if (response.success && response.data) {
+        setReservations(response.data)
+      } else {
+        toast.error(response.message || "예약 목록 조회에 실패했습니다.")
+      }
+    } catch (error) {
+      console.error("예약 조회 오류:", error)
+      toast.error("예약 목록을 불러오는 중 오류가 발생했습니다.")
+    } finally {
+      setLoading(false)
+    }
+  }, [searchQuery, selectedStatus])
+
+  // 필터 변경 시 데이터 조회 (검색어는 디바운스 적용)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchReservations()
+    }, searchQuery ? 300 : 0) // 검색어가 있을 때만 디바운스
+
+    return () => clearTimeout(timer)
+  }, [fetchReservations])
+
+  const handleOpenDetail = (reservation: Reservation) => {
     setSelectedReservation(reservation)
     setOpenReservationDetail(true)
   }
 
-  const handleApprove = (reservation: any, fromDetail = false) => {
+  const handleApprove = (reservation: Reservation, fromDetail = false) => {
     setSelectedReservation(reservation)
     setConfirmModal({
       open: true,
@@ -152,7 +92,7 @@ export default function ReservationsPage() {
     }
   }
 
-  const handleReject = (reservation: any, fromDetail = false) => {
+  const handleReject = (reservation: Reservation, fromDetail = false) => {
     setSelectedReservation(reservation)
     setConfirmModal({
       open: true,
@@ -165,28 +105,58 @@ export default function ReservationsPage() {
     }
   }
 
-  const handleConfirmAction = () => {
-    // 실제 API 호출 로직이 여기에 들어갑니다
-    if (confirmModal.action === "approve") {
-      // 승인 처리 로직
-      console.log(`${selectedReservation.company} 예약 승인 처리됨`, comment)
-      setConfirmModal({
-        open: true,
-        title: "예약이 승인되었습니다",
-        type: "success",
-        action: "",
-      })
-    } else if (confirmModal.action === "reject") {
-      // 반려 처리 로직
-      console.log(`${selectedReservation.company} 예약 반려 처리됨`, comment)
-      setConfirmModal({
-        open: true,
-        title: "예약이 반려되었습니다",
-        type: "error",
-        action: "",
-      })
+  const handleConfirmAction = async () => {
+    if (!selectedReservation) return
+
+    try {
+      if (confirmModal.action === "approve") {
+        // 승인 처리
+        const response = await reservationsApi.approveReservation(selectedReservation.id)
+
+        if (response.success) {
+          toast.success("예약이 승인되었습니다")
+          setConfirmModal({
+            open: false,
+            title: "",
+            type: "success",
+            action: "",
+          })
+          setComment("")
+          // 목록 새로고침
+          fetchReservations()
+        } else {
+          toast.error(response.message || "승인에 실패했습니다")
+        }
+      } else if (confirmModal.action === "reject") {
+        // 반려 처리
+        if (!comment.trim()) {
+          toast.error("반려 사유를 입력해주세요")
+          return
+        }
+
+        const response = await reservationsApi.rejectReservation(selectedReservation.id, {
+          rejection_reason: comment,
+        })
+
+        if (response.success) {
+          toast.success("예약이 반려되었습니다")
+          setConfirmModal({
+            open: false,
+            title: "",
+            type: "success",
+            action: "",
+          })
+          setComment("")
+          // 목록 새로고침
+          fetchReservations()
+        } else {
+          toast.error(response.message || "반려에 실패했습니다")
+        }
+      }
+    } catch (error) {
+      console.error("예약 처리 오류:", error)
+      toast.error("처리 중 오류가 발생했습니다")
     }
-    setComment("")
   }
 
   return (
@@ -197,10 +167,15 @@ export default function ReservationsPage() {
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="기업명 또는 제품명 검색" className="pl-9" />
+          <Input 
+            placeholder="기업명 또는 제품명 검색" 
+            className="pl-9" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
         <div className="flex gap-2">
-          <Select>
+          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="상태" />
             </SelectTrigger>
@@ -211,9 +186,6 @@ export default function ReservationsPage() {
               <SelectItem value="rejected">반려</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="icon">
-            <Filter className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
@@ -223,36 +195,44 @@ export default function ReservationsPage() {
           <CardTitle>예약 목록</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
-                  <th className="px-4 py-3 font-semibold">기업명</th>
-                  <th className="px-4 py-3 font-semibold">제품명</th>
-                  <th className="px-4 py-3 font-semibold">예약일</th>
-                  <th className="px-4 py-3 font-semibold">상태</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reservations.map((reservation) => (
-                  <tr
-                    key={reservation.id}
-                    className="border-b border-gray-100 text-sm hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handleOpenDetail(reservation)}
-                  >
-                    <td className="px-4 py-4 font-medium text-gray-900">{reservation.company}</td>
-                    <td className="px-4 py-4 text-gray-600">{reservation.product}</td>
-                    <td className="px-4 py-4 text-gray-600">{reservation.reservationDate}</td>
-                    <td className="px-4 py-4">
-                      {reservation.status === "waiting" && <Badge variant="waiting">승인대기</Badge>}
-                      {reservation.status === "approved" && <Badge variant="approved">승인됨</Badge>}
-                      {reservation.status === "rejected" && <Badge variant="rejected">반려됨</Badge>}
-                    </td>
+          {loading ? (
+            <div className="py-8 text-center text-gray-500">로딩 중...</div>
+          ) : reservations.length === 0 ? (
+            <div className="py-8 text-center text-gray-500">등록된 예약이 없습니다.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-gray-50 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 font-semibold">기업명</th>
+                    <th className="px-4 py-3 font-semibold">제품명</th>
+                    <th className="px-4 py-3 font-semibold">예약일</th>
+                    <th className="px-4 py-3 font-semibold">상태</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {reservations.map((reservation) => (
+                    <tr
+                      key={reservation.id}
+                      className="border-b border-gray-100 text-sm hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleOpenDetail(reservation)}
+                    >
+                      <td className="px-4 py-4 font-medium text-gray-900">{reservation.company}</td>
+                      <td className="px-4 py-4 text-gray-600">{reservation.product_name}</td>
+                      <td className="px-4 py-4 text-gray-600">
+                        {reservation.reservation_date ? new Date(reservation.reservation_date).toLocaleDateString('ko-KR') : '-'}
+                      </td>
+                      <td className="px-4 py-4">
+                        {reservation.status === "waiting" && <Badge variant="waiting">승인대기</Badge>}
+                        {reservation.status === "approved" && <Badge variant="approved">승인됨</Badge>}
+                        {reservation.status === "rejected" && <Badge variant="rejected">반려됨</Badge>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -272,16 +252,16 @@ export default function ReservationsPage() {
                     <span className="font-medium">기업명:</span> {selectedReservation.company}
                   </div>
                   <div>
-                    <span className="font-medium">담당자:</span> {selectedReservation.companyInfo.manager}
+                    <span className="font-medium">담당자:</span> {selectedReservation.manager}
                   </div>
                   <div>
-                    <span className="font-medium">이메일:</span> {selectedReservation.companyInfo.email}
+                    <span className="font-medium">이메일:</span> {selectedReservation.member_email}
                   </div>
                   <div>
-                    <span className="font-medium">연락처:</span> {selectedReservation.companyInfo.phone}
+                    <span className="font-medium">연락처:</span> {selectedReservation.member_phone || '-'}
                   </div>
                   <div>
-                    <span className="font-medium">국가:</span> {selectedReservation.companyInfo.country}
+                    <span className="font-medium">국가:</span> {selectedReservation.member_country}
                   </div>
                 </div>
               </div>
@@ -289,26 +269,42 @@ export default function ReservationsPage() {
                 <h3 className="text-sm font-semibold">제품 정보</h3>
                 <div className="rounded-md border border-gray-200 p-3 text-sm">
                   <div>
-                    <span className="font-medium">제품명:</span> {selectedReservation.productInfo.name}
+                    <span className="font-medium">제품명:</span> {selectedReservation.product_name}
                   </div>
                   <div>
                     <span className="font-medium">등급:</span>{" "}
-                    <StarRating grade={selectedReservation.productInfo.grade} size={14} />
+                    <StarRating grade={selectedReservation.product_grade || 0} size={14} />
                   </div>
                   <div>
-                    <span className="font-medium">고유코드:</span> {selectedReservation.productInfo.code}
+                    <span className="font-medium">고유코드:</span> {selectedReservation.product_code}
                   </div>
                   <div>
-                    <span className="font-medium">가격:</span> {selectedReservation.productInfo.price}원
+                    <span className="font-medium">단가:</span> {selectedReservation.product_unit_price?.toLocaleString('ko-KR')}원
+                  </div>
+                  <div>
+                    <span className="font-medium">수량:</span> {selectedReservation.quantity}
+                  </div>
+                  <div>
+                    <span className="font-medium">총 가격:</span> {selectedReservation.total_price?.toLocaleString('ko-KR')}원
                   </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold">요청 메모</h3>
-                <div className="rounded-md border border-gray-200 p-3 text-sm">
-                  <div>{selectedReservation.memo}</div>
+              {selectedReservation.memo && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold">요청 메모</h3>
+                  <div className="rounded-md border border-gray-200 p-3 text-sm">
+                    <div>{selectedReservation.memo}</div>
+                  </div>
                 </div>
-              </div>
+              )}
+              {selectedReservation.rejection_reason && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-red-600">반려 사유</h3>
+                  <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+                    <div>{selectedReservation.rejection_reason}</div>
+                  </div>
+                </div>
+              )}
               {selectedReservation.status === "waiting" && (
                 <div className="space-y-2">
                   <h3 className="text-sm font-semibold">코멘트</h3>

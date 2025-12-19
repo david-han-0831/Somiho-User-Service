@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Package, Users, Calendar, TrendingUp, ArrowRight } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,15 +16,29 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { ConfirmModal } from "@/components/confirm-modal"
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/hooks/use-toast"
+import { dashboardApi, reservationsApi } from "@/lib/api/client"
+import type { Database } from "@/types/supabase"
+
+type Product = Database["public"]["Tables"]["products"]["Row"]
+type Reservation = Database["public"]["Views"]["reservations_detailed"]["Row"]
 
 export default function Dashboard() {
+  const { toast } = useToast()
+  
+  // 상태 관리
+  const [stats, setStats] = useState<any>(null)
+  const [recentProducts, setRecentProducts] = useState<Product[]>([])
+  const [recentReservations, setRecentReservations] = useState<Reservation[]>([])
+  const [loading, setLoading] = useState(true)
+  
   const [openProductDetail, setOpenProductDetail] = useState(false)
   const [openReservationDetail, setOpenReservationDetail] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
-  const [selectedReservation, setSelectedReservation] = useState<any>(null)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null)
   const [comment, setComment] = useState("")
 
-  // confirmModal 상태 설정 부분 수정
   const [confirmModal, setConfirmModal] = useState({
     open: false,
     title: "",
@@ -32,8 +46,37 @@ export default function Dashboard() {
     action: "" as "approve" | "reject",
   })
 
-  // handleApprove 함수 수정
-  const handleApprove = (reservation: any) => {
+  // 데이터 로드
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
+
+  const loadDashboardData = async () => {
+    setLoading(true)
+    try {
+      // 통계, 최근 제품, 최근 예약 병렬 조회
+      const [statsResult, productsResult, reservationsResult] = await Promise.all([
+        dashboardApi.getStats(),
+        dashboardApi.getRecentProducts(5),
+        dashboardApi.getRecentReservations(5),
+      ])
+
+      if (statsResult.success) setStats(statsResult.data)
+      if (productsResult.success) setRecentProducts(productsResult.data)
+      if (reservationsResult.success) setRecentReservations(reservationsResult.data)
+    } catch (error) {
+      console.error("Dashboard data load error:", error)
+      toast({
+        title: "데이터 로드 실패",
+        description: "대시보드 데이터를 불러오는 중 오류가 발생했습니다.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleApprove = (reservation: Reservation) => {
     setSelectedReservation(reservation)
     setConfirmModal({
       open: true,
@@ -43,8 +86,7 @@ export default function Dashboard() {
     })
   }
 
-  // handleReject 함수 수정
-  const handleReject = (reservation: any) => {
+  const handleReject = (reservation: Reservation) => {
     setSelectedReservation(reservation)
     setConfirmModal({
       open: true,
@@ -54,206 +96,79 @@ export default function Dashboard() {
     })
   }
 
-  // handleConfirmAction 함수 수정
-  const handleConfirmAction = () => {
-    if (confirmModal.action === "approve") {
-      // 승인 처리 로직
-      console.log(`${selectedReservation.company} 예약 승인 처리됨`)
-      setOpenReservationDetail(false)
-      setConfirmModal({
-        ...confirmModal,
-        open: true,
-        title: "예약이 승인되었습니다",
-        action: "",
-      })
-    } else if (confirmModal.action === "reject") {
-      // 반려 처리 로직
-      console.log(`${selectedReservation.company} 예약 반려 처리됨`)
-      setOpenReservationDetail(false)
-      setConfirmModal({
-        ...confirmModal,
-        open: true,
-        title: "예약이 반려되었습니다",
-        action: "",
+  const handleConfirmAction = async () => {
+    if (!selectedReservation) return
+
+    try {
+      if (confirmModal.action === "approve") {
+        const result = await reservationsApi.approveReservation(selectedReservation.id)
+        
+        if (result.success) {
+          toast({
+            title: "승인 완료",
+            description: "예약이 승인되었습니다.",
+          })
+          setOpenReservationDetail(false)
+          loadDashboardData() // 데이터 새로고침
+        } else {
+          throw new Error(result.message)
+        }
+      } else if (confirmModal.action === "reject") {
+        if (!comment.trim()) {
+          toast({
+            title: "반려 사유 필요",
+            description: "반려 사유를 입력해주세요.",
+            variant: "destructive",
+          })
+          return
+        }
+
+        const result = await reservationsApi.rejectReservation(selectedReservation.id, {
+          rejection_reason: comment,
+        })
+        
+        if (result.success) {
+          toast({
+            title: "반려 완료",
+            description: "예약이 반려되었습니다.",
+          })
+          setOpenReservationDetail(false)
+          setComment("")
+          loadDashboardData() // 데이터 새로고침
+        } else {
+          throw new Error(result.message)
+        }
+      }
+
+      setConfirmModal({ ...confirmModal, open: false })
+    } catch (error: any) {
+      toast({
+        title: "처리 실패",
+        description: error.message || "처리 중 오류가 발생했습니다.",
+        variant: "destructive",
       })
     }
   }
 
-  // Mock data for demonstration
-  const recentProducts = [
-    {
-      id: 1,
-      name: "조미김 세트",
-      grade: "A+",
-      productionDate: "2025-03-15",
-      code: "20250315-001",
-      createdAt: "2025-03-20",
-      thumbnail: "/placeholder.svg?height=80&width=80",
-      origin: "한국",
-      price: "33,000",
-      description: "고급 조미김 세트입니다.",
-    },
-    {
-      id: 2,
-      name: "파래김 세트",
-      grade: "A",
-      productionDate: "2025-03-16",
-      code: "20250316-002",
-      createdAt: "2025-03-21",
-      thumbnail: "/placeholder.svg?height=80&width=80",
-      origin: "한국",
-      price: "28,000",
-      description: "신선한 파래김 세트입니다.",
-    },
-    {
-      id: 3,
-      name: "구운김 세트",
-      grade: "B+",
-      productionDate: "2025-03-17",
-      code: "20250317-003",
-      createdAt: "2025-03-22",
-      thumbnail: "/placeholder.svg?height=80&width=80",
-      origin: "한국",
-      price: "25,000",
-      description: "바삭한 구운김 세트입니다.",
-    },
-    {
-      id: 4,
-      name: "도시락김 세트",
-      grade: "A",
-      productionDate: "2025-03-18",
-      code: "20250318-004",
-      createdAt: "2025-03-23",
-      thumbnail: "/placeholder.svg?height=80&width=80",
-      origin: "한국",
-      price: "22,000",
-      description: "도시락용 김 세트입니다.",
-    },
-    {
-      id: 5,
-      name: "김밥용김 세트",
-      grade: "A+",
-      productionDate: "2025-03-19",
-      code: "20250319-005",
-      createdAt: "2025-03-24",
-      thumbnail: "/placeholder.svg?height=80&width=80",
-      origin: "한국",
-      price: "30,000",
-      description: "김밥용 김 세트입니다.",
-    },
-  ]
-
-  const recentReservations = [
-    {
-      id: 1,
-      company: "김무역",
-      product: "조미김 세트",
-      reservationDate: "2025-03-25",
-      status: "waiting",
-      companyInfo: {
-        manager: "김일본",
-        email: "kim@example.jp",
-        phone: "+81-3-1234-5678",
-        country: "일본",
-      },
-      productInfo: {
-        name: "조미김 세트",
-        grade: "A+",
-        code: "20250315-001",
-        price: "33,000",
-      },
-      memo: "샘플 요청 포함",
-    },
-    {
-      id: 2,
-      company: "해양물산",
-      product: "파래김 세트",
-      reservationDate: "2025-03-26",
-      status: "approved",
-      companyInfo: {
-        manager: "이중국",
-        email: "lee@example.cn",
-        phone: "+86-10-1234-5678",
-        country: "중국",
-      },
-      productInfo: {
-        name: "파래김 세트",
-        grade: "A",
-        code: "20250316-002",
-        price: "28,000",
-      },
-      memo: "대량 주문 예정",
-    },
-    {
-      id: 3,
-      company: "일본식품",
-      product: "구운김 세트",
-      reservationDate: "2025-03-27",
-      status: "waiting",
-      companyInfo: {
-        manager: "사토",
-        email: "sato@example.jp",
-        phone: "+81-3-2345-6789",
-        country: "일본",
-      },
-      productInfo: {
-        name: "구운김 세트",
-        grade: "B+",
-        code: "20250317-003",
-        price: "25,000",
-      },
-      memo: "품질 확인 요청",
-    },
-    {
-      id: 4,
-      company: "중국무역",
-      product: "도시락김 세트",
-      reservationDate: "2025-03-28",
-      status: "rejected",
-      companyInfo: {
-        manager: "왕",
-        email: "wang@example.cn",
-        phone: "+86-10-2345-6789",
-        country: "중국",
-      },
-      productInfo: {
-        name: "도시락김 세트",
-        grade: "A",
-        code: "20250318-004",
-        price: "22,000",
-      },
-      memo: "가격 협상 요청",
-    },
-    {
-      id: 5,
-      company: "글로벌푸드",
-      product: "김밥용김 세트",
-      reservationDate: "2025-03-29",
-      status: "waiting",
-      companyInfo: {
-        manager: "박미국",
-        email: "park@example.com",
-        phone: "+1-123-456-7890",
-        country: "미국",
-      },
-      productInfo: {
-        name: "김밥용김 세트",
-        grade: "A+",
-        code: "20250319-005",
-        price: "30,000",
-      },
-      memo: "샘플 요청",
-    },
-  ]
-
-  const handleOpenProductDetail = (product: any) => {
+  const handleOpenProductDetail = (product: Product) => {
     setSelectedProduct(product)
     setOpenProductDetail(true)
   }
 
-  const handleOpenReservationDetail = (reservation: any) => {
+  const handleOpenReservationDetail = (reservation: Reservation) => {
     setSelectedReservation(reservation)
     setOpenReservationDetail(true)
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F95700] mx-auto"></div>
+          <p className="mt-4 text-gray-600">데이터 로드 중...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -269,7 +184,7 @@ export default function Dashboard() {
               <Package className="h-4 w-4 text-[#F95700]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">12</div>
+              <div className="text-2xl font-bold">{stats?.new_products_week || 0}</div>
               <p className="text-xs text-muted-foreground">이번 주 등록</p>
             </CardContent>
           </Card>
@@ -282,7 +197,7 @@ export default function Dashboard() {
               <Users className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">4</div>
+              <div className="text-2xl font-bold">{stats?.pending_members || 0}</div>
               <p className="text-xs text-muted-foreground">승인 대기 중</p>
             </CardContent>
           </Card>
@@ -295,7 +210,7 @@ export default function Dashboard() {
               <Calendar className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">8</div>
+              <div className="text-2xl font-bold">{stats?.pending_reservations || 0}</div>
               <p className="text-xs text-muted-foreground">처리 필요</p>
             </CardContent>
           </Card>
@@ -308,7 +223,7 @@ export default function Dashboard() {
               <TrendingUp className="h-4 w-4 text-purple-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">3</div>
+              <div className="text-2xl font-bold">{stats?.updated_countries || 0}</div>
               <p className="text-xs text-muted-foreground">국가별 최신 시세</p>
             </CardContent>
           </Card>
@@ -351,9 +266,9 @@ export default function Dashboard() {
                     <td className="px-4 py-4">
                       <StarRating grade={product.grade} />
                     </td>
-                    <td className="px-4 py-4 text-gray-600">{product.productionDate}</td>
+                    <td className="px-4 py-4 text-gray-600">{product.production_date}</td>
                     <td className="px-4 py-4 font-mono text-xs text-gray-600">{product.code}</td>
-                    <td className="px-4 py-4 text-gray-600">{product.createdAt}</td>
+                    <td className="px-4 py-4 text-gray-600">{new Date(product.created_at).toLocaleDateString('ko-KR')}</td>
                   </tr>
                 ))}
               </tbody>
@@ -394,8 +309,8 @@ export default function Dashboard() {
                     onClick={() => handleOpenReservationDetail(reservation)}
                   >
                     <td className="px-4 py-4 font-medium text-gray-900">{reservation.company}</td>
-                    <td className="px-4 py-4 text-gray-600">{reservation.product}</td>
-                    <td className="px-4 py-4 text-gray-600">{reservation.reservationDate}</td>
+                    <td className="px-4 py-4 text-gray-600">{reservation.product_name}</td>
+                    <td className="px-4 py-4 text-gray-600">{reservation.reservation_date}</td>
                     <td className="px-4 py-4">
                       {reservation.status === "waiting" && <Badge variant="waiting">승인대기</Badge>}
                       {reservation.status === "approved" && <Badge variant="approved">승인됨</Badge>}
@@ -420,7 +335,7 @@ export default function Dashboard() {
             <div className="grid gap-4 py-4">
               <div className="aspect-square w-full max-w-[200px] mx-auto overflow-hidden rounded-md border border-gray-200">
                 <img
-                  src={selectedProduct.thumbnail || "/placeholder.svg"}
+                  src={selectedProduct.thumbnail_url || "/placeholder.svg"}
                   alt={selectedProduct.name}
                   className="h-full w-full object-cover"
                 />
@@ -437,7 +352,7 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">가격:</span>
-                <span className="col-span-3">{selectedProduct.price}원</span>
+                <span className="col-span-3">{selectedProduct.price.toLocaleString()}원</span>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">원산지:</span>
@@ -445,7 +360,7 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">생산일자:</span>
-                <span className="col-span-3">{selectedProduct.productionDate}</span>
+                <span className="col-span-3">{selectedProduct.production_date}</span>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">고유코드:</span>
@@ -453,12 +368,12 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="text-sm font-medium">등록일:</span>
-                <span className="col-span-3">{selectedProduct.createdAt}</span>
+                <span className="col-span-3">{new Date(selectedProduct.created_at).toLocaleDateString('ko-KR')}</span>
               </div>
               <div className="space-y-2">
                 <span className="text-sm font-medium">상품 설명:</span>
                 <div className="rounded-md border border-gray-200 p-3 text-sm">
-                  <div>{selectedProduct.description}</div>
+                  <div>{selectedProduct.description || '설명 없음'}</div>
                 </div>
               </div>
             </div>
@@ -490,16 +405,16 @@ export default function Dashboard() {
                     <span className="font-medium">기업명:</span> {selectedReservation.company}
                   </div>
                   <div>
-                    <span className="font-medium">담당자:</span> {selectedReservation.companyInfo.manager}
+                    <span className="font-medium">담당자:</span> {selectedReservation.manager}
                   </div>
                   <div>
-                    <span className="font-medium">이메일:</span> {selectedReservation.companyInfo.email}
+                    <span className="font-medium">이메일:</span> {selectedReservation.member_email}
                   </div>
                   <div>
-                    <span className="font-medium">연락처:</span> {selectedReservation.companyInfo.phone}
+                    <span className="font-medium">연락처:</span> {selectedReservation.member_phone}
                   </div>
                   <div>
-                    <span className="font-medium">국가:</span> {selectedReservation.companyInfo.country}
+                    <span className="font-medium">국가:</span> {selectedReservation.member_country}
                   </div>
                 </div>
               </div>
@@ -507,26 +422,36 @@ export default function Dashboard() {
                 <h3 className="text-sm font-semibold">제품 정보</h3>
                 <div className="rounded-md border border-gray-200 p-3 text-sm">
                   <div>
-                    <span className="font-medium">제품명:</span> {selectedReservation.productInfo.name}
+                    <span className="font-medium">제품명:</span> {selectedReservation.product_name}
                   </div>
                   <div>
                     <span className="font-medium">등급:</span>{" "}
-                    <StarRating grade={selectedReservation.productInfo.grade} size={14} />
+                    <StarRating grade={selectedReservation.product_grade as number} size={14} />
                   </div>
                   <div>
-                    <span className="font-medium">고유코드:</span> {selectedReservation.productInfo.code}
+                    <span className="font-medium">고유코드:</span> {selectedReservation.product_code}
                   </div>
                   <div>
-                    <span className="font-medium">가격:</span> {selectedReservation.productInfo.price}원
+                    <span className="font-medium">가격:</span> {selectedReservation.product_unit_price.toLocaleString()}원
                   </div>
                 </div>
               </div>
               <div className="space-y-2">
                 <h3 className="text-sm font-semibold">요청 메모</h3>
                 <div className="rounded-md border border-gray-200 p-3 text-sm">
-                  <div>{selectedReservation.memo}</div>
+                  <div>{selectedReservation.memo || '메모 없음'}</div>
                 </div>
               </div>
+              {selectedReservation.status === "waiting" && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold">반려 사유 (반려 시 필수)</h3>
+                  <Textarea
+                    placeholder="반려 사유를 입력하세요."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setOpenReservationDetail(false)}>
@@ -559,3 +484,4 @@ export default function Dashboard() {
     </div>
   )
 }
+
